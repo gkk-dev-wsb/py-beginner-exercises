@@ -16,12 +16,21 @@
 
 import csv
 import os
+import pandas as pd
 
-os.getcwd
-# open the file in the write mode
-with open('dane_kadrowe.csv', 'w') as f:
-    # create the csv writer
-    writer = csv.writer(f)
+DATA_DIR = os.path.join(os.getcwd(), '4', 'data')
+HR_DATA_FILE = os.path.join(DATA_DIR, 'dane_kadrowe.csv')
 
-    # write a row to the csv file
-    writer.writerow(row)
+df = pd.read_csv(os.path.join(DATA_DIR, 'IMIONA.csv'))
+df2 = pd.read_csv(os.path.join(DATA_DIR, 'NAZWISKA.csv'))
+
+print(df['IMIE'])
+print(df2['Nazwisko'])
+
+def writeHrData(filePath, data):
+    with open(filePath, 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(data)
+
+if __name__ == '__main__':
+    writeHrData(HR_DATA_FILE, [])
