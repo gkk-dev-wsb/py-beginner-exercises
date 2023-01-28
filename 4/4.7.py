@@ -13,3 +13,15 @@
 # baza imion: https://dane.gov.pl/pl/dataset/1501,lista-imion-wystepujacych-w-rejestrze-pesel
 # baza nazwisk: https://dane.gov.pl/pl/dataset/568,nazwiska-wystepujace-w-rejestrze-pesel
 # Program powinien wczytać dane dot. imion i nazwisk i na tej podstawie generować dane osobowe. Wygenerowane dane zapisz do pliku w postaci wyrażeń rozdzielonych średnikami i nazwij go dane_kadrowe.csv. Plik powinien zawierać min. 1000 rekordów.
+
+import csv
+import os
+
+os.getcwd
+# open the file in the write mode
+with open('dane_kadrowe.csv', 'w') as f:
+    # create the csv writer
+    writer = csv.writer(f)
+
+    # write a row to the csv file
+    writer.writerow(row)

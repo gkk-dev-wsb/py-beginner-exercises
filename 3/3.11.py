@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-from statistics import mean 
+from statistics import mean
+
 
 def Pearson(lista_x, lista_y):
     """

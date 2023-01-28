@@ -7,6 +7,7 @@
 # • trójmian ma 1 pierwiastek,
 # • trójmian nie ma pierwiastków rzeczywistych.
 from math import sqrt
+
 a = float(input('Dla reprezentacji trójmianu kwadratowego ax^2+bx+c, podaj współczynniki\na: '))
 b = float(input('b: '))
 c = float(input('c: '))
