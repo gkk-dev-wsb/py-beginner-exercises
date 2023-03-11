@@ -23,6 +23,7 @@ def import_csv(csvfilename):
             data.append(columns)
         return data
 
+
 MAX_HR_DB = os.path.join(os.getcwd(), '4', 'data', 'maxHRDB.4.11.csv')
 
 age = float(input("Podaj swój wiek: "))

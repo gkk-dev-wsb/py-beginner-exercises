@@ -5,31 +5,33 @@
 # temperatur między poszczególnymi skalami.
 # Sporządź dla powyższej funkcji dokumentację
 
-def fahrenheitToCelsius(temp_in_fahrenheit:float) -> float:
+def fahrenheitToCelsius(temp_in_fahrenheit: float) -> float:
     """
     Function returns temperature in celsius.
-    
+
     Args:
         temp_in_fahrenheit (float): temperature in fahrenheit degrees to be
         converted to celsius.
-    
+
     Returns:
         (float): temperature in celsius degrees 
     """
     return (temp_in_fahrenheit - 32) * (5 / 9)
 
-def celsiusToFahrenheit(temp_in_celsius:float) -> float:
+
+def celsiusToFahrenheit(temp_in_celsius: float) -> float:
     """
     Function returns temperature in celsius.
-    
+
     Args:
         temp_in_celsius (float): temperature in celsius degrees to be
         converted to fahrenheit.
-    
+
     Returns:
         (float): temperature in fahrenheit degrees 
     """
     return (temp_in_celsius * (9 / 5)) + 32
+
 
 if __name__ == '__main__':
     assert celsiusToFahrenheit(0) == 32

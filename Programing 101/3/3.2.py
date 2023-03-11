@@ -4,4 +4,5 @@ def helloWorld():
     """Funkcja wyświetla w konsoli Witaj świecie!"""
     print("Witaj świecie!")
 
+
 helloWorld()

@@ -8,10 +8,10 @@ import string
 ALPHABET = list(string.ascii_lowercase)
 
 f = open(os.path.join(os.getcwd(), '4', 'data', 'numbers.4.4.txt'), 'w')
-for i in range(0,11):
+for i in range(0, 11):
     f.write(str(i)+'\n')
 f.close()
 f = open(os.path.join(os.getcwd(), '4', 'data', 'numbers.4.4.txt'), 'a')
-for i in range(0,len(ALPHABET)):
+for i in range(0, len(ALPHABET)):
     f.write(ALPHABET[i]+'\n')
 f.close()

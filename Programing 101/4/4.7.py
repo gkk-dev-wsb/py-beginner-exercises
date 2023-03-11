@@ -16,6 +16,7 @@
 
 import csv
 import os
+
 import pandas as pd
 
 DATA_DIR = os.path.join(os.getcwd(), '4', 'data')
@@ -27,10 +28,12 @@ df2 = pd.read_csv(os.path.join(DATA_DIR, 'NAZWISKA.csv'))
 print(df['IMIE'])
 print(df2['Nazwisko'])
 
+
 def writeHrData(filePath, data):
     with open(filePath, 'w') as f:
         writer = csv.writer(f)
         writer.writerow(data)
+
 
 if __name__ == '__main__':
     writeHrData(HR_DATA_FILE, [])

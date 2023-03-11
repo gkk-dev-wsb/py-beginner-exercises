@@ -8,7 +8,7 @@ class human:
 
     def show_respect(self):
         print(f"Twój poziom respektu: {self.respect}")
-    
+
     def show_weight(self):
         print(self.weight)
 
@@ -19,10 +19,10 @@ class human:
         print("cash: ", self.cash)
         print("weight: ", self.weight)
         print("stamina: ", self.stamina)
-    
+
     def calculate_strength(self):
         return self.respect * 2 + self.cash / self.weight
-    
+
     def setExpertise(self, expertise):
         self.expertise = expertise
 
@@ -48,6 +48,7 @@ class human:
     def setCashFromPLN(self):
         pln = input("podaj kwote (w PLN): ")
         self.cash = pln
+
 
 class cat():
     def __init__(self, name, age, color, race, weight):
@@ -100,6 +101,7 @@ class cat():
         print(importance)
         return importance
 
+
 if __name__ == "__main__":
     h = human(100, 'enginnering', 1000, 90, 20)
     print("Showing human...")
@@ -117,7 +119,7 @@ if __name__ == "__main__":
     print("Setting all of human properties...")
     h.setExpertise('scrum')
     h.setStamina(200)
-    
+
     c = cat('Filemon', 12, 'red', 'persian', 1.5)
     print("Getting all of cat properties...")
     print(c.getAge())
@@ -135,4 +137,3 @@ if __name__ == "__main__":
     c.miau()
     c.sayMyName()
     c.show_importance()
-    

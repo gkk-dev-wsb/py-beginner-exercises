@@ -13,6 +13,7 @@ W - wypisz
 Q - wyjście
 """
 
+
 def removeSpecificLine(file, line_to_remove):
     with open(file, 'r+') as fp:
         lines = fp.readlines()
@@ -22,6 +23,7 @@ def removeSpecificLine(file, line_to_remove):
             if number not in [line_to_remove]:
                 fp.write(line)
 
+
 class Person():
     def __init__(self):
         self.name = input("Podaj imie: ")
@@ -29,16 +31,15 @@ class Person():
         self.position = input("Podaj stanowisko: ")
         self.compensation = input("Podaj wynagrodzenie: ")
 
+
 if __name__ == "__main__":
     PERSON_DB = os.path.join(os.getcwd(), '4', 'data', 'personDB.4.5.txt')
-
-
 
     print(MENU)
     opt = (input("Wybierze opcje: ")).upper()
     match opt:
         case 'D':
-            if(exists(PERSON_DB)):
+            if (exists(PERSON_DB)):
                 f = open(PERSON_DB, 'a')
             else:
                 f = open(PERSON_DB, 'w')
@@ -48,7 +49,7 @@ if __name__ == "__main__":
             f.write(p.position+' ')
             f.write(p.compensation+'\n')
         case 'U':
-            if(exists(PERSON_DB)):
+            if (exists(PERSON_DB)):
                 idx = int(input("Who to remove (provide index): "))
                 removeSpecificLine(PERSON_DB, idx)
             else:

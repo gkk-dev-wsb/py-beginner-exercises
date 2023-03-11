@@ -4,7 +4,8 @@
 calculated = False
 while not calculated:
     try:
-        a, b = map(float, input("Wpisz liczby na których chcesz wykonać działanie: ").split())
+        a, b = map(float, input(
+            "Wpisz liczby na których chcesz wykonać działanie: ").split())
         op = str(input("Podaj jakie działanie chcesz wykonać: "))
         res = 0
         match op:
@@ -20,7 +21,7 @@ while not calculated:
             case '/':
                 print(a, op, b, '=', a / b)
                 calculated = True
-            case _ :
+            case _:
                 print("Podana operacja nie jest obsługiwana, spróbuj ponownie.")
                 calculated = False
     except:

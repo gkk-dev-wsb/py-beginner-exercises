@@ -9,5 +9,6 @@ def fib(n):
     else:
         return fib(n - 1) + fib(n-2)
 
+
 num = int(input('Podaj numer wyrazu ciagu fibonacciego ktorego szukasz: '))
 print(f'Wynosi on {fib(num)}')
