@@ -8,8 +8,8 @@ class Funkcja:
 
     # Uniwersalna funkcja przeniesiona z FunkcjaKwadratowa, gdyz kazda funkcja
     # moze nie miec w pewnych warunkach rozwiazan.
-    def __noRealSolution(self) -> None:
-        e = f"Podana funkcja: {self.pretty} nie"\
+    def _noRealSolution(self) -> None:
+        e = f"Podana funkcja: {self} nie"\
             f"ma rozwiązań w dziedzienie rzeczywistej"
         raise ValueError(e)
 
@@ -19,13 +19,12 @@ class FunkcjaLiniowa(Funkcja):
         self.a = a
         self.b = b
 
-    @property
-    def pretty(self) -> str:
+    def __str__(self) -> str:
         return f"({self.a})x+({self.b})"
 
     def Rozwiaz(self) -> int:
         if self.a == 0:
-            self.__noRealSolution()
+            self._noRealSolution()
         else:
             return -self.b / self.a
 
@@ -36,9 +35,11 @@ class FunkcjaKwadratowa(Funkcja):
         self.b = b
         self.c = c
 
-    @property
-    def pretty(self) -> str:
+    def __str__(self) -> str:
         return f"({self.a})x^2+({self.b})x+({self.c})"
+
+    def _noRealSolution(self):
+        super(FunkcjaKwadratowa, self)._noRealSolution()
 
     def Rozwiaz(self) -> int | tuple[int]:
         if self.a != 0:
@@ -47,7 +48,7 @@ class FunkcjaKwadratowa(Funkcja):
                 return (-math.sqrt(delta) + self.b / 2*self.a,
                         -math.sqrt(delta) - self.b / 2*self.a)
             elif delta < 0:
-                self.__noRealSolution()
+                self._noRealSolution()
             else:
                 return (-self.b/2*self.a, -self.b/2*self.a)
         else:
@@ -55,7 +56,7 @@ class FunkcjaKwadratowa(Funkcja):
                 if self.c == 0:
                     return math.inf
                 else:
-                    self.__noRealSolution()
+                    self._noRealSolution()
             else:
                 return -self.c/self.b
 
@@ -95,8 +96,7 @@ class Zespolona(Liczba):
         self.re = re
         self.im = im
 
-    @ property
-    def pretty(self) -> str:
+    def __str__(self) -> str:
         return f"({self.re})+({self.im})i"
 
     @ property
@@ -158,7 +158,9 @@ class UlamekZ(Ulamek):
 def test_funkcjaKwadratowa():
     f1 = FunkcjaKwadratowa(1, -4, 4)  # ax^2+bx+c
     f2 = FunkcjaKwadratowa(0, 2, 3)  # bx+c
-    # f3 = FunkcjaKwadratowa(0,0,3) # Error: Funkcja nie ma rozwiązań w dziedzienie rzeczywistej
+    # Error: Funkcja nie ma rozwiązań w dziedzienie rzeczywistej
+    # f3 = FunkcjaKwadratowa(0, 0, 3)
+    # f3.Rozwiaz()
     f4 = FunkcjaKwadratowa(0, 0, 0)  # 0
 
     assert f1.Rozwiaz() == (2.0, 2.0)
@@ -166,10 +168,10 @@ def test_funkcjaKwadratowa():
     assert f4.Rozwiaz() == math.inf
 
     print("Przykładowe rozwiązania funkcji kwadratowej:\n")
-    print(f1.pretty, ':', f1.Rozwiaz())
-    print(f2.pretty, ':', f2.Rozwiaz())
-    # print(f3.pretty, ':', f3.Rozwiaz())
-    print(f4.pretty, ':', f4.Rozwiaz())
+    print(f1, ':', f1.Rozwiaz())
+    print(f2, ':', f2.Rozwiaz())
+    # print(f3, ':', f3.Rozwiaz())
+    print(f4, ':', f4.Rozwiaz())
 
 
 def test_funkcjaLiniowa():
@@ -181,8 +183,8 @@ def test_funkcjaLiniowa():
     # f2.Rozwiaz()
 
     print("Przykładowe rozwiązania funkcji liniowej:\n")
-    print(f1.pretty, ':', f1.Rozwiaz())
-    # print(f2.pretty, ':', f2.Rozwiaz())
+    print(f1, ':', f1.Rozwiaz())
+    # print(f2, ':', f2.Rozwiaz())
 
 
 def test_Zespolona():
@@ -192,15 +194,15 @@ def test_Zespolona():
     z3 = Zespolona(0, 1)
     z4 = Zespolona(0, 0)
     z5 = Zespolona(21, 5678)
-    print(z1.pretty, z2.pretty, z3.pretty, z4.pretty,)
+    print(z1, z2, z3, z4,)
     print("z1.dodaj(zx)")
-    print(z1.pretty, '+', z3.pretty, '=', z1.dodaj(z3).pretty)
-    print(z4.pretty, '+', z3.pretty, '=', z4.dodaj(z3).pretty)
-    print(z1.pretty, '+', z4.pretty, '=', z1.dodaj(z4).pretty)
+    print(z1, '+', z3, '=', z1.dodaj(z3))
+    print(z4, '+', z3, '=', z4.dodaj(z3))
+    print(z1, '+', z4, '=', z1.dodaj(z4))
     print("z1.mnoz(zx)")
-    print(z1.pretty, '*', z3.pretty, '=', z1.mnoz(z3).pretty)
-    print(z4.pretty, '*', z3.pretty, '=', z4.mnoz(z3).pretty)
-    print(z1.pretty, '*', z4.pretty, '=', z1.mnoz(z4).pretty)
+    print(z1, '*', z3, '=', z1.mnoz(z3))
+    print(z4, '*', z3, '=', z4.mnoz(z3))
+    print(z1, '*', z4, '=', z1.mnoz(z4))
     print("z1.modul")
     print(z1.modul)
     print(z2.modul)
