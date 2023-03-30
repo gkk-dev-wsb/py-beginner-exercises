@@ -1,3 +1,10 @@
+import csv
+import os
+# TODO: Files to be created:
+# historia
+# biblioteka
+# czytacze
+
 ASCII_MENU = """
     === BIBLIOTEKA ===
 1) Dodaj ksiązke
@@ -6,6 +13,22 @@ ASCII_MENU = """
 4) Sprawdz historie ksiazki
 5) Wyjdź
 """
+
+
+def inicjujDane():
+    folder = os.path.join(os.curdir, 'data')
+    if not os.path.exists(folder):
+        os.mkdir(folder)
+    files = ['data/historia.csv', 'data/biblioteka.csv', 'data/czytacze.csv']
+    for file in files:
+        if not os.path.exists(file):
+            open(file, 'w').close()
+
+
+def logToFile(filename, data):
+    with open(f'data/{filename}.csv', 'a') as f:
+        writer = csv.writer(f)
+        writer.writerow(data)
 
 
 class Ksiazka:
@@ -35,11 +58,14 @@ class Biblioteka:
         tytul = input("Podaj tytuł: ")
         autor = input("Podaj autora: ")
         rokWydania = input("Podaj rok wydania: ")
+        self.iloscKsiazek += 1
         self.ksiazki.append(
-            Ksiazka(tytul, autor, rokWydania, self.iloscKsiazek+1))
+            Ksiazka(tytul, autor, rokWydania, self.iloscKsiazek))
+        logToFile("biblioteka", [self.iloscKsiazek, tytul,
+                  autor, rokWydania, "W bibliotece"])
 
     def wypozyczKsiazke(self):
-        self.znajdzPoTytuleLubIndeksie(self)
+        self.znajdzPoTytuleLubIndeksie()
         indeksCzytacza = int(input("numer czytacza"))
         imie = input("imię")
         nazwisko = input("nazwisko")
@@ -47,11 +73,11 @@ class Biblioteka:
         dataWypozyczenia = input("data wypozyczenia")
 
     def oddajKsiazke(self):
-        self.znajdzPoTytuleLubIndeksie(self)
+        self.znajdzPoTytuleLubIndeksie()
         dataOddania = input("Podaj datę oddania: ")
 
     def podejrzyjHistorieKsiazki(self):
-        self.znajdzPoTytuleLubIndeksie(self)
+        self.znajdzPoTytuleLubIndeksie()
 
     def znajdzCzytacza(self, indeks) -> Czytacz:
         for cz in self.czytacze:
@@ -78,6 +104,7 @@ class Biblioteka:
 
 
 if __name__ == "__main__":
+    inicjujDane()
     biblioteka = Biblioteka()
     while True:
         menuWybor = input(ASCII_MENU)

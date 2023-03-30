@@ -1,5 +1,7 @@
 # Wymagana projektu OOP
 
+## General
+
 Do wybrania jest jeden z 3 projetków.
 Wymagania ogólne:
 
