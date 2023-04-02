@@ -1,5 +1,6 @@
 import csv
 import os
+from datetime import datetime
 
 ASCII_MENU = """
     === BIBLIOTEKA ===
@@ -11,6 +12,20 @@ ASCII_MENU = """
 6) Wyjdź
 """
 DATA_DIR = os.path.join(os.curdir, 'data')
+
+
+def validate_date_input(date_string, date_format='%Y-%m-%d'):
+    """
+    Validates and returns converted to date object string from user input.
+    :param date_string: str, user input date string
+    :param date_format: str, format in which function reads date
+    :return: datetime.date object if input is valid, None otherwise
+    """
+    try:
+        date_obj = datetime.strptime(date_string, date_format).date()
+        return date_obj
+    except ValueError:
+        return None
 
 
 def inicjujDane():
@@ -36,18 +51,60 @@ def logToFile(path, data):
         writer.writerow(data)
 
 
+def update_czytacze(numerCzytacza, iloscksiazek):
+    """
+    Updates the value of 'ilosc ksiazek' for a given 'numerCzytacza' in a CSV file.
+    :param numerCzytacza: int, the reader number to update
+    :param iloscksiazek: int, the new value of 'ilosc ksiazek'
+    :return: None
+    """
+    with open(os.path.join(DATA_DIR, 'czytacze.csv'), 'r', newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        header = next(reader)
+        rows = list(reader)
+
+    for row in rows:
+        if int(row[0]) == numerCzytacza:
+            row[3] = str(iloscksiazek)
+            break
+
+    with open(os.path.join(DATA_DIR, 'czytacze.csv'), 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        rows.insert(0, header)
+        writer.writerows(rows)
+
+
+def update_biblioteka(id, status):
+    with open(os.path.join(DATA_DIR, 'biblioteka.csv'), 'r', newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        header = next(reader)
+        rows = list(reader)
+
+    for row in rows:
+        if int(row[0]) == id+1:
+            row[4] = str(status)
+            break
+
+    with open(os.path.join(DATA_DIR, 'biblioteka.csv'), 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        rows.insert(0, header)
+        writer.writerows(rows)
+
+
 class Ksiazka:
-    def __init__(self, tytul, autor, rokWydania, indeksKsiazki) -> None:
+    def __init__(self, tytul, autor, rokWydania, indeksKsiazki, status) -> None:
         self.tytul: str = tytul
         self.autor: str = autor
         self.rokWydania: int = rokWydania
         self.indeksKsiazki: int = indeksKsiazki
+        self.status: str = status
 
     def __str__(self):
         return (f"tytul: {self.tytul}"
                 f"autor: {self.autor}"
                 f"rokWydania: {self.rokWydania}"
-                f"indeksKsiazki: {self.indeksKsiazki}")
+                f"indeksKsiazki: {self.indeksKsiazki}"
+                f"status: {self.status}")
 
 
 class Czytacz:
@@ -56,6 +113,10 @@ class Czytacz:
         self.imie: str = imie
         self.nazwisko: str = nazwisko
         self.wypozyczoneKsiazki: list[Ksiazka] = []
+
+    @property
+    def iloscWypozyczonychKsiazek(self):
+        return len(self.wypozyczoneKsiazki)
 
     def __str__(self):
         return (f"indeksCzytacza: {self.indeksCzytacza}"
@@ -96,10 +157,8 @@ class Biblioteka:
                 next(reader)  # skip the header row
                 for row in reader:
                     print(row)
-                    self.dodajKsiazke(row[1], row[2], row[3])
-            # self.dodajKsiazke()
+                    self.dodajKsiazke(row[1], row[2], row[3], row[4])
         if os.path.join(DATA_DIR, f"czytacze.csv"):
-            # self.dodajCzytacza()
             with open(os.path.join(DATA_DIR, f"czytacze.csv"), newline='') as csvfile:
                 reader = csv.reader(csvfile)
                 next(reader)  # skip the header row
@@ -107,7 +166,7 @@ class Biblioteka:
                     print(row)
                     self.dodajCzytacza(row[1], row[2])
 
-    def dodajKsiazke(self, tytul=None, autor=None, rokWydania=None) -> None:
+    def dodajKsiazke(self, tytul=None, autor=None, rokWydania=None, status=None) -> None:
         readInput = False
         if (not tytul):
             tytul = input("Podaj tytuł: ")
@@ -116,13 +175,17 @@ class Biblioteka:
             autor = input("Podaj autora: ")
             readInput = True
         if (not rokWydania):
-            rokWydania = input("Podaj rok wydania: ")
+            rokWydania = validate_date_input(
+                input("Podaj rok wydania (w formacie YYYY): "), "%Y")
+            if not rokWydania:
+                raise ValueError("Invalid date provided")
             readInput = True
         self.ksiazki.append(
-            Ksiazka(tytul, autor, rokWydania, self.iloscKsiazek))
+            Ksiazka(tytul, autor, rokWydania, self.iloscKsiazek, status))
         if (readInput):
+            status = "W bibliotece"
             logToFile(os.path.join(DATA_DIR, "biblioteka.csv"), [self.iloscKsiazek, tytul,
-                                                                 autor, rokWydania, "W bibliotece"])
+                                                                 autor, rokWydania, status])
 
     def dodajCzytacza(self, imie=None, nazwisko=None) -> None:
         readinput = False
@@ -139,19 +202,31 @@ class Biblioteka:
 
     def wypozyczKsiazke(self):
         czyUdana = False
-        self.znajdzPoTytuleLubIndeksie()
+        ksiazka = self.znajdzPoTytuleLubIndeksie()
+        ksiazka.status = "Nie w bibliotece"
         indeksCzytacza = int(input("numer czytacza: "))
         imie = input("imię: ")
         nazwisko = input("nazwisko: ")
-        self.znajdzCzytacza(indeksCzytacza)
-        dataWypozyczenia = input("data wypozyczenia: ")
-        self.operacje.append([self.iloscOperacji,
+        czytacz = self.znajdzCzytacza(indeksCzytacza)
+        czytacz.wypozyczoneKsiazki.append(ksiazka)
+        update_czytacze(indeksCzytacza, czytacz.iloscWypozyczonychKsiazek)
+        update_biblioteka(ksiazka.indeksKsiazki, ksiazka.status)
+        if not (czytacz.imie == imie and czytacz.nazwisko == nazwisko):
+            raise ValueError("Nie znaleziono takiego czytacza.")
+        dataWypozyczenia = validate_date_input(
+            input("data wypozyczenia (w formacie yyyy-mm-dd): "))
+        if not dataWypozyczenia:
+            raise ValueError("Invalid date provided")
+        self.operacje.append([ksiazka.indeksKsiazki,
                              indeksCzytacza, czyUdana, dataWypozyczenia])
-        logToFile('historia', [self.operacje[-1]])
+        logToFile(os.path.join(DATA_DIR, 'historia.csv'), self.operacje[-1])
 
     def oddajKsiazke(self):
         self.znajdzPoTytuleLubIndeksie()
-        dataOddania = input("Podaj datę oddania: ")
+        dataOddania = validate_date_input(
+            input("Podaj datę oddania (w formacie yyyy-mm-dd): "))
+        if not dataOddania:  # or dataOddania < dataWypozyczenia
+            raise ValueError("Invalid date provided")
 
     def podejrzyjHistorieKsiazki(self):
         self.znajdzPoTytuleLubIndeksie()
@@ -204,5 +279,5 @@ if __name__ == "__main__":
             print(f"Zamykanie programu...")
             break
         else:
-            raise ValueError("Wybrano nie istniejącą opcję w menu")
+            print("Wybrano nie istniejącą opcję w menu")
     SystemExit(0)
