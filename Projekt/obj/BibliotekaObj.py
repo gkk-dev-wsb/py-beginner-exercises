@@ -30,20 +30,20 @@ class Biblioteka:
         return len(self.czytacze)
     
     def ladujBiblioteke(self):
-        if os.path.join(c.DATA_DIR, f"biblioteka.csv"):
-            with open(os.path.join(c.DATA_DIR, f"biblioteka.csv"), newline='') as csvfile:
+        if os.path.join(c.FOLDER_DANYCH, f"biblioteka.csv"):
+            with open(os.path.join(c.FOLDER_DANYCH, f"biblioteka.csv"), newline='') as csvfile:
                 reader = csv.reader(csvfile)
                 next(reader)
                 for row in reader:
                     self.dodajKsiazke(row[1], row[2], row[3], row[4])
-        if os.path.join(c.DATA_DIR, f"czytacze.csv"):
-            with open(os.path.join(c.DATA_DIR, f"czytacze.csv"), newline='') as csvfile:
+        if os.path.join(c.FOLDER_DANYCH, f"czytacze.csv"):
+            with open(os.path.join(c.FOLDER_DANYCH, f"czytacze.csv"), newline='') as csvfile:
                 reader = csv.reader(csvfile)
                 next(reader)
                 for row in reader:
                     self.dodajCzytacza(row[1], row[2])
-        if os.path.join(c.DATA_DIR, f"historia.csv"):
-            with open(os.path.join(c.DATA_DIR, f"historia.csv"), newline='') as csvfile:
+        if os.path.join(c.FOLDER_DANYCH, f"historia.csv"):
+            with open(os.path.join(c.FOLDER_DANYCH, f"historia.csv"), newline='') as csvfile:
                 reader = csv.reader(csvfile)
                 next(reader)
                 for row in reader:
@@ -70,7 +70,7 @@ class Biblioteka:
                 Ksiazka(tytul, autor, rokWydania, self.iloscKsiazek, status))
             if (readInput):
                 status = "W bibliotece"
-                db.logToFile(os.path.join(c.DATA_DIR, "biblioteka.csv"), [self.iloscKsiazek, tytul,
+                db.zapiszDoPliku(os.path.join(c.FOLDER_DANYCH, "biblioteka.csv"), [self.iloscKsiazek, tytul,
                                                                           autor, rokWydania, status])
         except:
             print("Nie udało się dodać książki...")
@@ -87,7 +87,7 @@ class Biblioteka:
                 readinput = True
             self.czytacze.append(Czytacz(self.iloscCzytaczy, imie, nazwisko))
             if (readinput):
-                db.logToFile(os.path.join(c.DATA_DIR, "czytacze.csv"),
+                db.zapiszDoPliku(os.path.join(c.FOLDER_DANYCH, "czytacze.csv"),
                              [self.iloscCzytaczy, imie, nazwisko, 0])
         except:
             print("Nie udało się dodać czytacza...")
@@ -110,13 +110,13 @@ class Biblioteka:
                 raise ValueError("Invalid date provided")
             czyUdana = True
             czytacz.wypozyczoneKsiazki.append(ksiazka)
-            db.update_czytacze(
+            db.aktualizuj_czytaczy(
                 indeksCzytacza, czytacz.iloscWypozyczonychKsiazek)
-            db.update_biblioteka(ksiazka.indeksKsiazki, ksiazka.status)
+            db.aktualizuj_biblioteke(ksiazka.indeksKsiazki, ksiazka.status)
             op = [ksiazka.indeksKsiazki, indeksCzytacza,
                 czyUdana, dataWypozyczenia, 0]
             self.operacje.append(op)
-            db.logToFile(os.path.join(c.DATA_DIR, 'historia.csv'),
+            db.zapiszDoPliku(os.path.join(c.FOLDER_DANYCH, 'historia.csv'),
                         self.operacje[-1])
         except Exception as e:
             data = [ksiazka.indeksKsiazki if 'ksiazka' in locals() else '',
@@ -124,7 +124,7 @@ class Biblioteka:
                     False, dataWypozyczenia if 'dataWypozyczenia' in locals() else '',
                     0]
             self.operacje.append(data)
-            db.logToFile(os.path.join(c.DATA_DIR, 'historia.csv'),
+            db.zapiszDoPliku(os.path.join(c.FOLDER_DANYCH, 'historia.csv'),
                         self.operacje[-1])
             print("Nie udało się wypożyczyć książki...", e)
 
@@ -153,15 +153,15 @@ class Biblioteka:
             for k in czytacz.wypozyczoneKsiazki:
                 if k.indeksKsiazki == ksiazka.indeksKsiazki:
                     czytacz.wypozyczoneKsiazki.remove(k)
-            db.update_czytacze(
+            db.aktualizuj_czytaczy(
                 indeksCzytacza, czytacz.iloscWypozyczonychKsiazek)
-            db.update_biblioteka(ksiazka.indeksKsiazki, "W bibliotece")
+            db.aktualizuj_biblioteke(ksiazka.indeksKsiazki, "W bibliotece")
             czyUdana = True
             op[3] = czyUdana
         except:
             print("Nie udało się oddać książki...")
         finally:
-            db.update_historia(his[0], his[1], his[2])
+            db.aktualizuj_historie(his[0], his[1], his[2])
 
     def podejrzyjHistorieKsiazki(self):
         try:

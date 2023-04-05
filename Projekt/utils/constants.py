@@ -10,4 +10,4 @@ ASCII_MENU = """
 6) Wyjdź
 """
 
-DATA_DIR = os.path.join(os.curdir, 'data')
+FOLDER_DANYCH = os.path.join(os.curdir, 'data')

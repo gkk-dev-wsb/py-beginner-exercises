@@ -4,35 +4,40 @@ import utils.constants as c
 from pathlib import Path
 
 
-def readDataSkippingHeader(fileName: str) -> tuple:
+def odczytaj_dane_bez_naglowka(nazwaPliku: str) -> tuple:
     """
-    Reads the given CSV file and returns a tuple containing the header and rows.
-    :param fileName: str, the name of the file to read
-    :return: tuple, containing header and rows
+    Czyta podany plik CSV i zwraca krotkę zawierającą nagłówek i wiersze.
+    
+    :param fileName: str, nazwa pliku do odczytu
+    
+    :return: tuple, zawierająca nagłówek i wiersze
     """
-    with open(os.path.join(c.DATA_DIR, fileName), 'r', newline='') as csvfile:
-        reader = csv.reader(csvfile)
-        header = next(reader)
-        return header, list(reader)
+    with open(os.path.join(c.FOLDER_DANYCH, nazwaPliku), 'r', newline='') as csvfile:
+        czytacz = csv.reader(csvfile)
+        naglowek = next(czytacz)
+        return naglowek, list(czytacz)
 
 
-def writeDataSkippingHeader(fileName: str, header: list, rows: list[list]) -> None:
+def zapisz_dane_bez_naglowka(nazwaPliku: str, naglowek: list, wiersze: list[list]) -> None:
     """
-    Writes the given rows to the specified CSV file with the specified header.
-    :param fileName: str, the name of the file to write
-    :param header: list, the header to write to the file
-    :param rows: list[list], the rows to write to the file
+    Zapisuje podane wiersze do określonego pliku CSV z podanym nagłówkiem.
+
+    :param nazwaPliku: str, nazwa pliku do zapisania
+    :param naglowek: list, nagłówek do zapisania do pliku
+    :param wiersze: list[list], wiersze do zapisania do pliku
+    
     :return: None
     """
-    with open(os.path.join(c.DATA_DIR, fileName), 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        rows.insert(0, header)
-        writer.writerows(rows)
+    with open(os.path.join(c.FOLDER_DANYCH, nazwaPliku), 'w', newline='') as csvfile:
+        pisaz = csv.writer(csvfile)
+        wiersze.insert(0, naglowek)
+        pisaz.writerows(wiersze)
 
 
 def inicjujDane() -> None:
     """
-    Initializes data by creating required CSV files with their respective headers.
+    Inicjalizuje dane poprzez utworzenie wymaganych plików CSV z ich odpowiednimi nagłówkami.
+
     :return: None
     """
     kolumnyPlikow = {
@@ -41,73 +46,79 @@ def inicjujDane() -> None:
         "biblioteka": ["ID", "Tytul", "Autor", "Rok wydania", "Status"],
         "czytacze": ["Numer czytacza", "Imie", "Nazwisko", "llosc ksiazek"]
     }
-    if not os.path.exists(c.DATA_DIR):
-        os.mkdir(c.DATA_DIR)
+    if not os.path.exists(c.FOLDER_DANYCH):
+        os.mkdir(c.FOLDER_DANYCH)
 
     for plik, kolumny in kolumnyPlikow.items():
-        sciezka = os.path.join(c.DATA_DIR, f"{plik}.csv")
+        sciezka = os.path.join(c.FOLDER_DANYCH, f"{plik}.csv")
         if not os.path.exists(sciezka):
             open(sciezka, 'w').close()
-            logToFile(sciezka, kolumny)
+            zapiszDoPliku(sciezka, kolumny)
 
 
-def logToFile(path: Path, data: list) -> None:
+def zapiszDoPliku(sciezka: Path, dane: list) -> None:
     """
-    Logs the given data to the specified file.
-    :param path: str, the path of the file to log data to
-    :param data: list, the data to log to the file
+    Zapisuje podane dane do określonego pliku.
+    :param sciezka: str, ścieżka pliku, do którego mają zostać zapisane dane
+    :param dane: list, dane do zapisania do pliku
     :return: None
     """
-    with open(path, 'a') as f:
-        writer = csv.writer(f)
-        writer.writerow(data)
+    with open(sciezka, 'a') as f:
+        pisaz = csv.writer(f)
+        pisaz.writerow(dane)
 
 
-def update_czytacze(numerCzytacza: int, iloscksiazek: int) -> None:
+def aktualizuj_czytaczy(numerCzytacza: int, iloscksiazek: int) -> None:
     """
-    Updates the value of 'ilosc ksiazek' for a given 'numerCzytacza' in a CSV file.
-    :param numerCzytacza: int, the reader number to update
-    :param iloscksiazek: int, the new value of 'ilosc ksiazek'
+    Aktualizuje wartość pola 'ilość książek' dla podanego 'numerCzytacza' w
+    pliku CSV.
+    
+    :param numerCzytacza: int, numer czytelnika do zaktualizowania
+    :param iloscksiazek: int, nowa wartość pola 'ilość książek'
+    
     :return: None
     """
-    header, rows = readDataSkippingHeader('czytacze.csv')
-    for row in rows:
-        if int(row[0]) == numerCzytacza:
-            row[3] = str(iloscksiazek)
+    naglowek, wiersze = odczytaj_dane_bez_naglowka('czytacze.csv')
+    for wiersz in wiersze:
+        if int(wiersz[0]) == numerCzytacza:
+            wiersz[3] = str(iloscksiazek)
             break
-    writeDataSkippingHeader('czytacze.csv', header, rows)
+    zapisz_dane_bez_naglowka('czytacze.csv', naglowek, wiersze)
 
 
-def update_historia(id_ksiazki: int, data_oddania: int, czyUdana: bool) -> None:
+def aktualizuj_historie(id_ksiazki: int, data_oddania: int, czyUdana: bool) -> None:
     """
-    Updates the value of 'Data oddania' for a given 'id_ksiazki' in a CSV file.
-    :param id_ksiazki: int, target book ID
-    :param data_oddania: int, the new value of 'Data oddania'
-    :param czyUdana: bool, flag if operation was successful
+    Aktualizuje wartość pola 'Data oddania' dla danej książki o identyfikatorze
+    'id_ksiazki' w pliku CSV.
+    
+    :param id_ksiazki: int, identyfikator książki
+    :param data_oddania: int, nowa wartość pola 'Data oddania'
+    :param czyUdana: bool, flaga informująca o powodzeniu operacji
+    
     :return: None
     """
-    header, rows = readDataSkippingHeader('historia.csv')
-    for row in rows:
-        if row[0] == str(id_ksiazki) and str(row[4]) == '0':
-            row[4] = str(data_oddania)
-            row[2] = str(czyUdana)
-    writeDataSkippingHeader('historia.csv', header, rows)
+    naglowek, wiersze = odczytaj_dane_bez_naglowka('historia.csv')
+    for wiersz in wiersze:
+        if wiersz[0] == str(id_ksiazki) and str(wiersz[4]) == '0':
+            wiersz[4] = str(data_oddania)
+            wiersz[2] = str(czyUdana)
+    zapisz_dane_bez_naglowka('historia.csv', naglowek, wiersze)
 
 
-def update_biblioteka(id: int, status: str) -> None:
+def aktualizuj_biblioteke(id: int, status: str) -> None:
     """
-    Update the 'Status' field for a book in the 'biblioteka.csv' file with the given 'id'.
+    Aktualizuje pole 'Status' książki o podanym 'id' w pliku 'biblioteka.csv'.
 
     Parameters:
-    id (int): The ID of the book to update (indexed from 0).
-    status (str): The new status to set for the book.
+    id (int): ID książki do zaktualizowania (indeksowane od 0).
+    status (str): Nowy status książki.
 
     Returns:
     None
     """
-    header, rows = readDataSkippingHeader('biblioteka.csv')
-    for row in rows:
-        if int(row[0]) == id+1:
-            row[4] = str(status)
+    naglowek, wiersze = odczytaj_dane_bez_naglowka('biblioteka.csv')
+    for wiersz in wiersze:
+        if int(wiersz[0]) == id+1:
+            wiersz[4] = str(status)
             break
-    writeDataSkippingHeader('biblioteka.csv', header, rows)
+    zapisz_dane_bez_naglowka('biblioteka.csv', naglowek, wiersze)
