@@ -96,7 +96,7 @@ class Biblioteka:
         czyUdana = False
         op = ["", "", czyUdana, "", ""]
         try:
-            ksiazka = self.znajdzPoTytuleLubIndeksie()
+            ksiazka = self.find_book_by_title_or_index()
             ksiazka.status = "Nie w bibliotece"
             indeksCzytacza = int(u.cleanInput(
                 input("numer czytacza: "), testMode=self.TEST_MODE))
@@ -128,7 +128,7 @@ class Biblioteka:
         czyUdana = False
         his = ["", "", czyUdana]
         try:
-            ksiazka = self.znajdzPoTytuleLubIndeksie()
+            ksiazka = self.find_book_by_title_or_index()
             his[0] = ksiazka.indeksKsiazki
             dataOddania = u.validate_date_input(
                 u.cleanInput(input("Podaj datę oddania (w formacie yyyy-mm-dd): "), testMode=self.TEST_MODE))
@@ -161,7 +161,7 @@ class Biblioteka:
 
     def podejrzyjHistorieKsiazki(self):
         try:
-            ksiazka = self.znajdzPoTytuleLubIndeksie()
+            ksiazka = self.find_book_by_title_or_index()
             print(
                 f"Ksiązka: {ksiazka.tytul} {ksiazka.autor} {ksiazka.rokWydania}")
             print(f"Status: {ksiazka.status}")
@@ -181,24 +181,28 @@ class Biblioteka:
                 return cz
         raise ValueError("Wybrano nie istniejącą opcję w menu")
 
-    def znajdzPoTytuleLubIndeksie(self) -> Ksiazka:
-        if (self.iloscKsiazek < 1):
-            raise ValueError("Nie ma ksiazek w bibliotece")
-        tytulCzyIndeks = int(u.cleanInput(input("""Chcesz znaleźć ksiązke po tytule czy indeksie?
+    def find_book_by_title_or_index(self) -> Ksiazka:
+        if self.iloscKsiazek < 1:
+            raise ValueError("Nie ma książek w bibliotece")
+
+        choice = int(u.cleanInput(input("""Chcesz znaleźć książkę po tytule czy indeksie?
             1) Tytuł
             2) Indeks
             """), testMode=self.TEST_MODE))
-        if (tytulCzyIndeks == 1):
-            tytul = u.cleanInput(input("Podaj tytul ksiazki: "),
-                                 testMode=self.TEST_MODE)
+
+        if choice == 1:
+            title = u.cleanInput(
+                input("Podaj tytuł książki: "), testMode=self.TEST_MODE)
             for ksiazka in self.ksiazki:
-                if (ksiazka.tytul == tytul):
+                if ksiazka.tytul == title:
                     return ksiazka
-        elif (tytulCzyIndeks == 2):
-            indeks = int(u.cleanInput(
-                input("Podaj indeks ksiazki: "), testMode=self.TEST_MODE))
-            for ksiazka in self.ksiazki:
-                if (ksiazka.indeksKsiazki == (indeks-1)):
-                    return ksiazka
+
+        elif choice == 2:
+            index = int(u.cleanInput(
+                input("Podaj indeks książki: "), testMode=self.TEST_MODE))
+            if index > self.iloscKsiazek or index < 1:
+                raise ValueError("Podano nieprawidłowy indeks")
+            return self.ksiazki[index-1]
+
         else:
-            raise ValueError("Wybrano nie istniejącą opcję w menu")
+            raise ValueError("Wybrano nieprawidłową opcję w menu")
