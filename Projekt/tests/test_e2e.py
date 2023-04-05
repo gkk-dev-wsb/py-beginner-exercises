@@ -44,7 +44,7 @@ def test_main():
               b'3\n', b'2\n', b'1\n', b'2002-02-22\n', b'1\n',
               b'2\n', b'1\n', b'451 Stopni Fahrenheita\n', b'2\n', b'Michal\n', b'Staszewski\n', b'2002-02-23\n',
               b'3\n', b'1\n', b'451 Stopni Fahrenheita\n', b'2005-02-23\n', b'2\n',
-              b'2\n', b'\n',  # Should be: NumerCzytacza, czyUdana
+              b'2\n', b'2\n', b'1\n', b'3\n', '\n'  # Testcase where czytacz data is incorrect
               b'2\n', b'2\n', b'1\n', b'4\n', b'Paulina\n', b'Borsuk\n', b'2010-04-01\n']:
         TEST_INPUT_STRINGS += i
     process = subprocess.Popen(['python3', 'main.py', 'test'],

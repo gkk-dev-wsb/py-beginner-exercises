@@ -30,28 +30,24 @@ class Biblioteka:
         return len(self.czytacze)
     
     def ladujBiblioteke(self):
-        filenames = ["biblioteka.csv", "czytacze.csv", "historia.csv"]
-        headers = {"biblioteka.csv": ["Tytul", "Autor", "Rok wydania", "Status"],
-                "czytacze.csv": ["Imie", "Nazwisko"],
-                "historia.csv": ['Numer czytacza', 'Czy udana', 'Data wypozczenia', 'Data oddania']}
-        methods = {"biblioteka.csv": self.dodajKsiazke,
-                "czytacze.csv": self.dodajCzytacza,
-                "historia.csv": self.operacje.append}
-        for filename in filenames:
-            filepath = os.path.join(c.DATA_DIR, filename)
-            if os.path.exists(filepath):
-                with open(filepath, newline='') as csvfile:
-                    reader = csv.reader(csvfile)
-                    next(reader)
-                    for row in reader:
-                        args = [field for field in row if field]
-                        if len(args) != len(headers[filename]):
-                            raise ValueError(f"Invalid number of fields in {filename} file: {args}")
-                        methods[filename](*args)
-            else:
-                with open(filepath, 'w', newline='') as csvfile:
-                    writer = csv.writer(csvfile)
-                    writer.writerow(headers[filename])
+        if os.path.join(c.DATA_DIR, f"biblioteka.csv"):
+            with open(os.path.join(c.DATA_DIR, f"biblioteka.csv"), newline='') as csvfile:
+                reader = csv.reader(csvfile)
+                next(reader)
+                for row in reader:
+                    self.dodajKsiazke(row[1], row[2], row[3], row[4])
+        if os.path.join(c.DATA_DIR, f"czytacze.csv"):
+            with open(os.path.join(c.DATA_DIR, f"czytacze.csv"), newline='') as csvfile:
+                reader = csv.reader(csvfile)
+                next(reader)
+                for row in reader:
+                    self.dodajCzytacza(row[1], row[2])
+        if os.path.join(c.DATA_DIR, f"historia.csv"):
+            with open(os.path.join(c.DATA_DIR, f"historia.csv"), newline='') as csvfile:
+                reader = csv.reader(csvfile)
+                next(reader)
+                for row in reader:
+                    self.operacje.append(row)
 
     def dodajKsiazke(self, tytul=None, autor=None, rokWydania=None, status=None) -> None:
         try:
@@ -97,8 +93,6 @@ class Biblioteka:
             print("Nie udało się dodać czytacza...")
 
     def wypozyczKsiazke(self):
-        czyUdana = False
-        op = ["", "", czyUdana, "", ""]
         try:
             ksiazka = self.find_book_by_title_or_index()
             ksiazka.status = "Nie w bibliotece"
@@ -120,13 +114,19 @@ class Biblioteka:
                 raise ValueError("Invalid date provided")
             czyUdana = True
             op = [ksiazka.indeksKsiazki, indeksCzytacza,
-                  czyUdana, dataWypozyczenia, 0]
-        except:
-            print("Nie udało się wypożyczyć książki...")
-        finally:
+                czyUdana, dataWypozyczenia, 0]
             self.operacje.append(op)
             db.logToFile(os.path.join(c.DATA_DIR, 'historia.csv'),
-                         self.operacje[-1])
+                        self.operacje[-1])
+        except Exception as e:
+            data = [ksiazka.indeksKsiazki if 'ksiazka' in locals() else '',
+                    indeksCzytacza if 'indeksCzytacza' in locals() else '',
+                    False, dataWypozyczenia if 'dataWypozyczenia' in locals() else '',
+                    0]
+            self.operacje.append(data)
+            db.logToFile(os.path.join(c.DATA_DIR, 'historia.csv'),
+                        self.operacje[-1])
+            print("Nie udało się wypożyczyć książki...", e)
 
     def oddajKsiazke(self):
         czyUdana = False
