@@ -38,20 +38,20 @@ Po kliknięciu 2 możemy wypożyczyć książkę z biblioteki. Podać wtedy musi
 - imię,
 - nazwisko i
 - data wypozyczenia
-wszystko jako osobne inputy w konsoli. Jeżeli jest wiele powtórzeń książki,
-wybrana zostanie ta z najmniejszym indeksem. Książka ta otrzymuje wtedy status
-"Nie w bibliotece" i nie może zostać wypożyczona przez użytkownika, lecz próby
-muszą zostać zapisane do histori biblioteki. Wypożyczającemu zwiększa się ilość
-posiadanych przez niego książek.
+  wszystko jako osobne inputy w konsoli. Jeżeli jest wiele powtórzeń książki,
+  wybrana zostanie ta z najmniejszym indeksem. Książka ta otrzymuje wtedy status
+  "Nie w bibliotece" i nie może zostać wypożyczona przez użytkownika, lecz próby
+  muszą zostać zapisane do histori biblioteki. Wypożyczającemu zwiększa się ilość
+  posiadanych przez niego książek.
 
 ### Po kliknięciu 3
 
 Po kliknięciu 3 możemy oddać książkę do biblioteki. Wystarczy podać:
 
 - numer indeksu, lub tytuł książki
-lecz jeżeli więcej, niż jeden taki sam tytuł został wypożyczony, bibliotekarka i
-tak musi zapytać o numer indeksu. Następnie jest zapytanie o datę. Książka
-zostaje zwrócona. Ilośc książek posiadanych przez czytacza dekrementuje się.
+  lecz jeżeli więcej, niż jeden taki sam tytuł został wypożyczony, bibliotekarka i
+  tak musi zapytać o numer indeksu. Następnie jest zapytanie o datę. Książka
+  zostaje zwrócona. Ilośc książek posiadanych przez czytacza dekrementuje się.
 
 ### Po kliknięciu 4
 
@@ -59,7 +59,7 @@ Po kliknięciu 4 możemy podejrzeć historię książki. Wybór książki jak
 w punkcie 3, po czym wyświetlają nam się wszystkie informacje o książce:
 
 - ilość udanych i nieudanych wypożyczeń wraz z datami i numerami osób
-wypożyczających.
+  wypożyczających.
 
 Jeżeli książka nie jest dostępna, bibliotekarka opowie nam o tym na końcu
 wypowiedzi.
