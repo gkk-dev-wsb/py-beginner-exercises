@@ -1,7 +1,6 @@
 import os
 import csv
-from obj.KsiazkaObj import Ksiazka
-from obj.CzytaczObj import Czytacz
+from obj.dataObjects import Czytacz, Ksiazka
 import utils.utils as u
 import utils.constants as c
 import utils.db as db
