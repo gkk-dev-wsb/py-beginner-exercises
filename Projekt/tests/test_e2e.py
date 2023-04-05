@@ -17,7 +17,7 @@ def _remove_pycache_directories(directory):
 
 def teardown():
     _remove_pycache_directories('.')
-    # shutil.rmtree("data")
+    shutil.rmtree("data")
 
 
 def test_main():

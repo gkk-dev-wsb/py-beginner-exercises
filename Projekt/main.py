@@ -15,7 +15,7 @@ if __name__ == "__main__":
     biblioteka = Biblioteka(TEST_MODE)
     biblioteka.ladujBiblioteke()
     while True:
-        menuWybor = u.cleanInput(input(c.ASCII_MENU), testMode=TEST_MODE)
+        menuWybor = u.czyscWejscie(input(c.ASCII_MENU), trybTestowania=TEST_MODE)
         if (menuWybor == '1'):
             biblioteka.dodajKsiazke()
         elif (menuWybor == '2'):

@@ -1,51 +1,43 @@
-from datetime import datetime
+from datetime import datetime, date
 
 
-def date_to_str(date_obj, date_format='%Y-%m-%d'):
+def date_to_str(objekt_daty: date, date_format='%Y-%m-%d'):
     """
-    Converts datetime.date object to string.
-    :param date_obj: datetime.date object
-    :param date_format: str, format in which function returns date
-    :return: str, date in string format
+    Konwertuje obiekt datetime.date na string.
+    :param data_obj: obiekt datetime.date
+    :param format_daty: str, format zwracanej daty
+    :return: str, data w formacie string
     """
-    date_string = datetime.strftime(date_obj, date_format)
-    return date_string
+    return datetime.strftime(objekt_daty, date_format)
 
-
-def str_to_date(date_string, date_format='%Y-%m-%d'):
+def waliduj_date_z_wejscia(lancuch_daty, format_daty='%Y-%m-%d'):
     """
-    Converts string to datetime.date object.
-    :param date_string: str, date in string format
-    :param date_format: str, format in which function reads date
-    :return: datetime.date object
+    Waliduje i zwraca string z datą z wejścia użytkownika, konwertując ją na
+    obiekt daty.
+    :param lancuch_daty: str, string daty wprowadzony przez użytkownika
+    :param format_daty: str, format, w jakim funkcja odczytuje datę
+    :return: obiekt datetime.date, jeśli dane wejściowe są poprawne, w przeciwnym razie None
     """
-    date_obj = datetime.strptime(date_string, date_format).date()
-    return date_obj
+    return datetime.strptime(lancuch_daty, format_daty).date()
 
 
-def validate_date_input(date_string, date_format='%Y-%m-%d'):
+def czyscWejscie(wejscie:str, trybTestowania=False):
     """
-    Validates and returns converted to date object string from user input.
-    :param date_string: str, user input date string
-    :param date_format: str, format in which function reads date
-    :return: datetime.date object if input is valid, None otherwise
-    """
-    return datetime.strptime(date_string, date_format).date()
+    Funkcja czyszczenia łańcucha znaków przez zastępowanie polskich znaków ich
+    odpowiednikami łacińskimi przy użyciu metod str.maketrans() i str.translate().
 
+    Args:
+    wejscie (str): Łańcuch znaków do wyczyszczenia.
+    trybTestowania (bool, opcjonalnie): Jeśli ustawione na True, drukuje łańcuch
+    wejściowy przed i po wyczyszczeniu. Domyślnie False.
 
-def cleanInput(input_str, testMode=False):
-    """
-This function cleans the input string by replacing Polish characters with their Latin equivalents using str.maketrans() and str.translate() methods.
-
-Args:
-input_str (str): The input string to be cleaned.
-testMode (bool, optional): If set to True, prints the input string before and after cleaning. Defaults to False.
-
-Returns:
-str: The cleaned string with all Polish characters replaced by their Latin equivalents.
+    Returns:
+    str: Wyczyszczony łańcuch znaków, w którym wszystkie polskie znaki zostały
+    zastąpione przez ich odpowiedniki łacińskie.
 """
-    polish_to_latin = str.maketrans('ąćęłńóśźżĄĆĘŁŃÓŚŹŻ', 'acelnoszzACELNOSZZ')
-    output_str = input_str.translate(polish_to_latin)
-    if testMode:
-        print("$: ", input_str)
-    return output_str
+
+    polskie_na_lacinskie = str.maketrans('ąćęłńóśźżĄĆĘŁŃÓŚŹŻ', 'acelnoszzACELNOSZZ')
+    wyjscie = wejscie.translate(polskie_na_lacinskie)
+    if trybTestowania:
+        print("$: ", wejscie)
+    return wyjscie

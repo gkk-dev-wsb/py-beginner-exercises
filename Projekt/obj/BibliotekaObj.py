@@ -53,16 +53,16 @@ class Biblioteka:
         try:
             readInput = False
             if (not tytul):
-                tytul = u.cleanInput(input("Podaj tytuł: "),
-                                     testMode=self.TEST_MODE)
+                tytul = u.czyscWejscie(input("Podaj tytuł: "),
+                                     trybTestowania=self.TEST_MODE)
                 readInput = True
             if (not autor):
-                autor = u.cleanInput(
-                    input("Podaj autora: "), testMode=self.TEST_MODE)
+                autor = u.czyscWejscie(
+                    input("Podaj autora: "), trybTestowania=self.TEST_MODE)
                 readInput = True
             if (not rokWydania):
-                rokWydania = u.validate_date_input(u.cleanInput(
-                    input("Podaj rok wydania (w formacie YYYY): "), testMode=self.TEST_MODE), "%Y")
+                rokWydania = u.waliduj_date_z_wejscia(u.czyscWejscie(
+                    input("Podaj rok wydania (w formacie YYYY): "), trybTestowania=self.TEST_MODE), "%Y")
                 if not rokWydania:
                     raise ValueError("Invalid date provided")
                 readInput = True
@@ -79,11 +79,11 @@ class Biblioteka:
         try:
             readinput = False
             if (not imie):
-                imie = u.cleanInput(input("imię: "), testMode=self.TEST_MODE)
+                imie = u.czyscWejscie(input("imię: "), trybTestowania=self.TEST_MODE)
                 readinput = True
             if (not nazwisko):
-                nazwisko = u.cleanInput(
-                    input("nazwisko: "), testMode=self.TEST_MODE)
+                nazwisko = u.czyscWejscie(
+                    input("nazwisko: "), trybTestowania=self.TEST_MODE)
                 readinput = True
             self.czytacze.append(Czytacz(self.iloscCzytaczy, imie, nazwisko))
             if (readinput):
@@ -96,16 +96,16 @@ class Biblioteka:
         try:
             ksiazka = self.find_book_by_title_or_index()
             ksiazka.status = "Nie w bibliotece"
-            indeksCzytacza = int(u.cleanInput(
-                input("numer czytacza: "), testMode=self.TEST_MODE))
-            imie = u.cleanInput(input("imię: "), testMode=self.TEST_MODE)
-            nazwisko = u.cleanInput(
-                input("nazwisko: "), testMode=self.TEST_MODE)
+            indeksCzytacza = int(u.czyscWejscie(
+                input("numer czytacza: "), trybTestowania=self.TEST_MODE))
+            imie = u.czyscWejscie(input("imię: "), trybTestowania=self.TEST_MODE)
+            nazwisko = u.czyscWejscie(
+                input("nazwisko: "), trybTestowania=self.TEST_MODE)
             czytacz = self.znajdzCzytacza(indeksCzytacza)
             if not (czytacz.imie == imie and czytacz.nazwisko == nazwisko):
                 raise ValueError("Nie znaleziono takiego czytacza.")
-            dataWypozyczenia = u.validate_date_input(
-                u.cleanInput(input("data wypozyczenia (w formacie yyyy-mm-dd): "), testMode=self.TEST_MODE))
+            dataWypozyczenia = u.waliduj_date_z_wejscia(
+                u.czyscWejscie(input("data wypozyczenia (w formacie yyyy-mm-dd): "), trybTestowania=self.TEST_MODE))
             if not dataWypozyczenia:
                 raise ValueError("Invalid date provided")
             czyUdana = True
@@ -134,16 +134,16 @@ class Biblioteka:
         try:
             ksiazka = self.find_book_by_title_or_index()
             his[0] = ksiazka.indeksKsiazki
-            dataOddania = u.validate_date_input(
-                u.cleanInput(input("Podaj datę oddania (w formacie yyyy-mm-dd): "), testMode=self.TEST_MODE))
+            dataOddania = u.waliduj_date_z_wejscia(
+                u.czyscWejscie(input("Podaj datę oddania (w formacie yyyy-mm-dd): "), trybTestowania=self.TEST_MODE))
             if not dataOddania:
                 raise ValueError("Invalid date provided")
             his[1] = dataOddania
-            indeksCzytacza = int(u.cleanInput(
-                input("numer czytacza: "), testMode=self.TEST_MODE))
+            indeksCzytacza = int(u.czyscWejscie(
+                input("numer czytacza: "), trybTestowania=self.TEST_MODE))
             for op in self.operacje:
                 if (op[0] == str(ksiazka.indeksKsiazki) and op[1] == str(indeksCzytacza)):
-                    if u.str_to_date(op[3]) > dataOddania:
+                    if u.waliduj_date_z_wejscia(op[3]) > dataOddania:
                         raise ValueError(
                             "Nie można oddać książki przed datą wypożyczenia")
                     if (ksiazka.status[4] == "W bibliotece"):
@@ -189,21 +189,21 @@ class Biblioteka:
         if self.iloscKsiazek < 1:
             raise ValueError("Nie ma książek w bibliotece")
 
-        choice = int(u.cleanInput(input("""Chcesz znaleźć książkę po tytule czy indeksie?
+        choice = int(u.czyscWejscie(input("""Chcesz znaleźć książkę po tytule czy indeksie?
             1) Tytuł
             2) Indeks
-            """), testMode=self.TEST_MODE))
+            """), trybTestowania=self.TEST_MODE))
 
         if choice == 1:
-            title = u.cleanInput(
-                input("Podaj tytuł książki: "), testMode=self.TEST_MODE)
+            title = u.czyscWejscie(
+                input("Podaj tytuł książki: "), trybTestowania=self.TEST_MODE)
             for ksiazka in self.ksiazki:
                 if ksiazka.tytul == title:
                     return ksiazka
 
         elif choice == 2:
-            index = int(u.cleanInput(
-                input("Podaj indeks książki: "), testMode=self.TEST_MODE))
+            index = int(u.czyscWejscie(
+                input("Podaj indeks książki: "), trybTestowania=self.TEST_MODE))
             if index > self.iloscKsiazek or index < 1:
                 raise ValueError("Podano nieprawidłowy indeks")
             return self.ksiazki[index-1]

@@ -21,51 +21,36 @@ def test_date_to_str():
     date_str = u.date_to_str(date_obj)
     assert date_str == '2021-01-01'
 
-
-def test_str_to_date_valid_date():
-    date_str = '2022-06-30'
-    expected_date = date(2022, 6, 30)
-    actual_date = u.str_to_date(date_str)
-    assert actual_date == expected_date
-
-
-def test_str_to_date_custom_format():
-    date_str = '30-06-2022'
-    expected_date = date(2022, 6, 30)
-    actual_date = u.str_to_date(date_str, '%d-%m-%Y')
-    assert actual_date == expected_date
-
-
-def test_validate_date_input_valid_date():
+def test_waliduj_date_z_wejscia_valid_date():
     # Test with valid date in default format
     date_str = '2022-06-01'
-    result = u.validate_date_input(date_str)
+    result = u.waliduj_date_z_wejscia(date_str)
     assert isinstance(result, date)
     assert result == date(2022, 6, 1)
 
     # Test with valid date in custom format
     date_str = '01/06/2022'
-    result = u.validate_date_input(date_str, '%d/%m/%Y')
+    result = u.waliduj_date_z_wejscia(date_str, '%d/%m/%Y')
     assert isinstance(result, date)
     assert result == date(2022, 6, 1)
 
 
-def test_validate_date_input_invalid_format():
+def test_waliduj_date_z_wejscia_invalid_format():
     # Test with invalid format
     date_str = '2022/06/01'
     with pytest.raises(ValueError):
-        u.validate_date_input(date_str)
+        u.waliduj_date_z_wejscia(date_str)
 
 
-def test_cleanInput_noPolishChars():
-    assert u.cleanInput("Hello world") == "Hello world"
+def test_czyscWejscie_noPolishChars():
+    assert u.czyscWejscie("Witaj Świecie!") == "Witaj Swiecie!"
 
 
-def test_cleanInput_withPolishChars():
-    assert u.cleanInput(
+def test_czyscWejscie_withPolishChars():
+    assert u.czyscWejscie(
         "Bądź mi litościw, Boże mój") == "Badz mi litosciw, Boze moj"
 
 
-def test_cleanInput_withTestMode():
-    assert u.cleanInput("Dziękuję bardzo!",
-                        testMode=True) == "Dziekuje bardzo!"
+def test_czyscWejscie_withTestMode():
+    assert u.czyscWejscie("Dziękuję bardzo!",
+                        trybTestowania=True) == "Dziekuje bardzo!"
