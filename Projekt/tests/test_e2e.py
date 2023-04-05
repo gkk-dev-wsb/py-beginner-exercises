@@ -17,7 +17,7 @@ def _remove_pycache_directories(directory):
 
 def teardown():
     _remove_pycache_directories('.')
-    shutil.rmtree("data")
+    # shutil.rmtree("data")
 
 
 def test_main():
@@ -44,7 +44,7 @@ def test_main():
               b'3\n', b'2\n', b'1\n', b'2002-02-22\n', b'1\n',
               b'2\n', b'1\n', b'451 Stopni Fahrenheita\n', b'2\n', b'Michal\n', b'Staszewski\n', b'2002-02-23\n',
               b'3\n', b'1\n', b'451 Stopni Fahrenheita\n', b'2005-02-23\n', b'2\n',
-              b'2\n', b'2\n', b'1\n', b'3\n', '\n'  # Testcase where czytacz data is incorrect
+              b'2\n', b'2\n', b'1\n', b'3\n', b'\n', b'\n',  # Testcase where czytacz (Imie, Nazwisko) data is incorrect
               b'2\n', b'2\n', b'1\n', b'4\n', b'Paulina\n', b'Borsuk\n', b'2010-04-01\n']:
         TEST_INPUT_STRINGS += i
     process = subprocess.Popen(['python3', 'main.py', 'test'],
@@ -81,7 +81,7 @@ def test_historia_csv():
     expected_content = """ID,Numer czytacza,Czy udana,Data wypozczenia,Data oddania
 0,1,False,2002-02-21,2002-02-22
 0,2,False,2002-02-23,2005-02-23
-,3,False,,
+0,3,False,,0
 0,4,True,2010-04-01,0"""
     assert content == expected_content, f"Expected '{expected_content}', but got '{content}'"
 

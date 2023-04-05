@@ -102,10 +102,6 @@ class Biblioteka:
             nazwisko = u.cleanInput(
                 input("nazwisko: "), testMode=self.TEST_MODE)
             czytacz = self.znajdzCzytacza(indeksCzytacza)
-            czytacz.wypozyczoneKsiazki.append(ksiazka)
-            db.update_czytacze(
-                indeksCzytacza, czytacz.iloscWypozyczonychKsiazek)
-            db.update_biblioteka(ksiazka.indeksKsiazki, ksiazka.status)
             if not (czytacz.imie == imie and czytacz.nazwisko == nazwisko):
                 raise ValueError("Nie znaleziono takiego czytacza.")
             dataWypozyczenia = u.validate_date_input(
@@ -113,6 +109,10 @@ class Biblioteka:
             if not dataWypozyczenia:
                 raise ValueError("Invalid date provided")
             czyUdana = True
+            czytacz.wypozyczoneKsiazki.append(ksiazka)
+            db.update_czytacze(
+                indeksCzytacza, czytacz.iloscWypozyczonychKsiazek)
+            db.update_biblioteka(ksiazka.indeksKsiazki, ksiazka.status)
             op = [ksiazka.indeksKsiazki, indeksCzytacza,
                 czyUdana, dataWypozyczenia, 0]
             self.operacje.append(op)
