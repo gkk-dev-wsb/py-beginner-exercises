@@ -108,9 +108,9 @@ class Biblioteka:
                 input("data wypozyczenia (w formacie yyyy-mm-dd): "))
             if not dataWypozyczenia:
                 raise ValueError("Invalid date provided")
+            czyUdana = True
             op = [ksiazka.indeksKsiazki, indeksCzytacza,
                   czyUdana, dataWypozyczenia, 0]
-            czyUdana = True
         except:
             print("Nie udało się wypożyczyć książki...")
         finally:
@@ -146,6 +146,7 @@ class Biblioteka:
                 indeksCzytacza, czytacz.iloscWypozyczonychKsiazek)
             db.update_biblioteka(ksiazka.indeksKsiazki, "W bibliotece")
             czyUdana = True
+            op[3] = czyUdana
         except:
             print("Nie udało się oddać książki...")
         finally:
@@ -160,10 +161,10 @@ class Biblioteka:
             print("Historia:")
             ct = 1
             for op in self.operacje:
-                if (op[0] == str(ksiazka.indeksKsiazki)):
+                if (str(op[0]) == str(ksiazka.indeksKsiazki)):
                     ct += 1
                     print(
-                        f"{ct}. Wporzyczył: {op[1]} Udanie: { 'Tak' if op[2] else 'Nie'} Wporzyczono: {op[3]} Oddano: {op[4]}")
+                        f"{ct}. Wyporzyczył: {op[1]} Udanie: { 'Tak' if op[2] else 'Nie'} Porzyczono: {op[3]} Oddano: {op[4]}")
         except:
             print("Nie udało się znaleźć książki...")
 

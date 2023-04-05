@@ -58,7 +58,7 @@ def update_czytacze(numerCzytacza, iloscksiazek):
 def update_historia(id_ksiazki, data_oddania, czyUdana):
     header, rows = readDataSkippingHeader('historia.csv')
     for row in rows:
-        if row[0] == str(id_ksiazki) and str(row[4]) == 0:
+        if row[0] == str(id_ksiazki) and str(row[4]) == '0':
             row[4] = str(data_oddania)
             row[2] = str(czyUdana)
     writeDataSkippingHeader('historia.csv', header, rows)
