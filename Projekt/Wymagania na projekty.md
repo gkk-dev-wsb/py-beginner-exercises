@@ -115,3 +115,5 @@ Zakończenie któregokolwiek z punktów(poza 5) powinno zostać potwierdzone i o
 Wpisanie odpowiednio haseł :
 1, 451 stopni Fahrenheita, Ray Bradbury, 1953, 2, 1, 1, Janusz, Kowalski, 21/2/2002, 3, 1, 22/2/2002, 2, 1, 2, Michał, Michal, Staszewski, 21/2/2002, 23/2/2002, 2, 1, 3, Jadwiga, Mroczek, 3, 451 stopni Fahrenheita, 23/3/2005, 1, Zmierzch, Stephenie Meyer, 2005, 2, 1, 4, Paulina, Borsuk, 1/4/2010
 Powinniśmy otrzymać zawartość plików pokazaną w załączonych screenshotach
+
+##

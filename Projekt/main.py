@@ -1,9 +1,13 @@
+import sys
 from obj.BibliotekaObj import Biblioteka
 import utils.constants as c
 import utils.db as db
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 'test':
+            print("Uruchomiono w trybie testowym...")
     db.inicjujDane()
     biblioteka = Biblioteka()
     biblioteka.ladujBiblioteke()
