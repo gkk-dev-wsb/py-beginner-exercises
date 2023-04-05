@@ -3,7 +3,20 @@ import shutil
 import os
 
 
+def _remove_pycache_directories(directory):
+    for root, dirs, files in os.walk(directory):
+        for dir in dirs:
+            if dir == '__pycache__':
+                dir_path = os.path.join(root, dir)
+                print(f'Removing directory {dir_path}')
+                try:
+                    shutil.rmtree(dir_path)
+                except OSError as e:
+                    print(f'Error deleting {dir_path}: {e}')
+
+
 def teardown():
+    _remove_pycache_directories('.')
     shutil.rmtree("data")
 
 

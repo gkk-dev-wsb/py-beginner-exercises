@@ -1,11 +1,13 @@
+from dataclasses import dataclass
 
+
+@dataclass
 class Ksiazka:
-    def __init__(self, tytul, autor, rokWydania, indeksKsiazki, status) -> None:
-        self.tytul: str = tytul
-        self.autor: str = autor
-        self.rokWydania: int = rokWydania
-        self.indeksKsiazki: int = indeksKsiazki
-        self.status: str = status
+    tytul: str
+    autor: str
+    rokWydania: int
+    indeksKsiazki: int
+    status: str
 
     def __str__(self):
         return (f"tytul: {self.tytul}"

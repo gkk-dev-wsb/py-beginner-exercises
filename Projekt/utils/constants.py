@@ -9,4 +9,5 @@ ASCII_MENU = """
 5) Dodaj czytelnika
 6) Wyjdź
 """
+
 DATA_DIR = os.path.join(os.curdir, 'data')

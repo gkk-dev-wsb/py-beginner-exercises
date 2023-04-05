@@ -39,14 +39,15 @@ def validate_date_input(date_string, date_format='%Y-%m-%d'):
 
 def cleanInput(input_str, testMode=False):
     """
-    Removes Polish characters from a string and replaces them with their closest Latin analogs.
+This function cleans the input string by replacing Polish characters with their Latin equivalents using str.maketrans() and str.translate() methods.
 
-    Args:
-        input_str (str): The input string with Polish characters.
-        testMode (bool): If True, function will repeat any input to the console.
-    Returns:
-        str: The output string with Polish characters replaced with their Latin analogs.
-    """
+Args:
+input_str (str): The input string to be cleaned.
+testMode (bool, optional): If set to True, prints the input string before and after cleaning. Defaults to False.
+
+Returns:
+str: The cleaned string with all Polish characters replaced by their Latin equivalents.
+"""
     polish_to_latin = str.maketrans('ąćęłńóśźżĄĆĘŁŃÓŚŹŻ', 'acelnoszzACELNOSZZ')
     output_str = input_str.translate(polish_to_latin)
     if testMode:
