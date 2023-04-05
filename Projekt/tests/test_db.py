@@ -1,6 +1,13 @@
-import utils.constants as c
 import os
-import utils.db as db
+import sys
+
+# Add the parent directory to the sys.path list
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, parent_dir)
+
+
+import utils.db as db # pylint: disable=import-error
+import utils.constants as c # pylint: disable=import-error
 
 
 def test_inicjujDane():

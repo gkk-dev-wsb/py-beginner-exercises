@@ -1,6 +1,13 @@
-import pytest
 from datetime import date
-import utils.utils as u
+import pytest
+import sys
+import os
+
+# Add the parent directory to the sys.path list
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, parent_dir)
+
+import utils.utils as u # pylint: disable=import-error
 
 
 def test_date_to_str():

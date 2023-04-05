@@ -1,4 +1,11 @@
-from obj.dataObjects import Ksiazka
+import sys
+import os
+
+# Add the parent directory to the sys.path list
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, parent_dir)
+
+from obj.dataObjects import Ksiazka # pylint: disable=import-error
 
 
 def test_Ksiazka_str():
