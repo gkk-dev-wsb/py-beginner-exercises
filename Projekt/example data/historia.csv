@@ -1,0 +1,5 @@
+ID,Numer czytacza,Czy udana,Data wypozczenia,Data oddania
+0,1,False,2002-02-21,2002-02-22
+0,2,False,2002-02-23,2005-02-23
+,3,False,,
+0,4,True,2010-04-01,0
