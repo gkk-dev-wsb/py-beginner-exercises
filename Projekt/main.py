@@ -2,17 +2,20 @@ import sys
 from obj.BibliotekaObj import Biblioteka
 import utils.constants as c
 import utils.db as db
+import utils.utils as u
 
+TEST_MODE = False
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         if sys.argv[1] == 'test':
+            TEST_MODE = True
             print("Uruchomiono w trybie testowym...")
     db.inicjujDane()
-    biblioteka = Biblioteka()
+    biblioteka = Biblioteka(TEST_MODE)
     biblioteka.ladujBiblioteke()
     while True:
-        menuWybor = input(c.ASCII_MENU)
+        menuWybor = u.cleanInput(input(c.ASCII_MENU), testMode=TEST_MODE)
         if (menuWybor == '1'):
             biblioteka.dodajKsiazke()
         elif (menuWybor == '2'):
