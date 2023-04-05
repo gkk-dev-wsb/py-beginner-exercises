@@ -4,9 +4,13 @@ from datetime import datetime, date
 def date_to_str(objekt_daty: date, date_format='%Y-%m-%d'):
     """
     Konwertuje obiekt datetime.date na string.
-    :param data_obj: obiekt datetime.date
-    :param format_daty: str, format zwracanej daty
-    :return: str, data w formacie string
+    
+    Args:
+    data_obj: obiekt datetime.date
+    format_daty: str, format zwracanej daty
+    
+    Returns:
+    str, data w formacie string
     """
     return datetime.strftime(objekt_daty, date_format)
 
@@ -14,9 +18,13 @@ def waliduj_date_z_wejscia(lancuch_daty, format_daty='%Y-%m-%d'):
     """
     Waliduje i zwraca string z datą z wejścia użytkownika, konwertując ją na
     obiekt daty.
-    :param lancuch_daty: str, string daty wprowadzony przez użytkownika
-    :param format_daty: str, format, w jakim funkcja odczytuje datę
-    :return: obiekt datetime.date, jeśli dane wejściowe są poprawne, w przeciwnym razie None
+    
+    Args:
+    lancuch_daty: str, string daty wprowadzony przez użytkownika
+    format_daty: str, format, w jakim funkcja odczytuje datę
+    
+    Returns:
+    obiekt datetime.date, jeśli dane wejściowe są poprawne, w przeciwnym razie None
     """
     return datetime.strptime(lancuch_daty, format_daty).date()
 

@@ -3,95 +3,94 @@ import shutil
 import os
 
 
-def _remove_pycache_directories(directory):
-    for root, dirs, files in os.walk(directory):
-        for dir in dirs:
-            if dir == '__pycache__':
-                dir_path = os.path.join(root, dir)
-                print(f'Removing directory {dir_path}')
+def _usun_katalogi_pycache(directory):
+    for korzen, katalogi, pliki in os.walk(directory):
+        for katalog in katalogi:
+            if katalog == '__pycache__':
+                sciezka_katalogu = os.path.join(korzen, katalog)
+                print(f'Removing directory {sciezka_katalogu}')
                 try:
-                    shutil.rmtree(dir_path)
+                    shutil.rmtree(sciezka_katalogu)
                 except OSError as e:
-                    print(f'Error deleting {dir_path}: {e}')
+                    print(f'Error deleting {sciezka_katalogu}: {e}')
 
 
 def teardown():
-    _remove_pycache_directories('.')
+    _usun_katalogi_pycache('.')
     shutil.rmtree("data")
 
 
 def test_main():
 
-    # Set up test data
-    TEST_INPUT_STRINGS = b'\n'
+    # Skonfiguruj dane testowe
+    LANCUCH_TESTOWYCH_DANYCH_WEJSCIOWYCH = b'\n'
 
-    # Add book 1
+    # Dodaj książkę 1
     for i in [b'1\n', b'451 Stopni Fahrenheita\n', b'Ray Bradbury\n', b'1953\n']:
-        TEST_INPUT_STRINGS += i
+        LANCUCH_TESTOWYCH_DANYCH_WEJSCIOWYCH += i
 
-    # Add book 2
+    # Dodaj książkę 2
     for i in [b'1\n', b'Zmierzch\n', b'Stephenie Meyer\n', b'2005\n']:
-        TEST_INPUT_STRINGS += i
+        LANCUCH_TESTOWYCH_DANYCH_WEJSCIOWYCH += i
 
-    # Add czytacze
+    # Dodaj czytaczy
     for cz in [[b'Janusz\n', b'Kowalski\n'], [b'Michal\n', b'Staszewski\n'],
                [b'Jadwiga\n', b'Mroczek\n'], [b'Paulina\n', b'Borsuk\n']]:
         for i in [b'5\n', cz[0], cz[1]]:
-            TEST_INPUT_STRINGS += i
+            LANCUCH_TESTOWYCH_DANYCH_WEJSCIOWYCH += i
 
-    # # Wypozycz ksiazke
+    # Wypozycz ksiazke
     for i in [b'2\n', b'2\n', b'1\n', b'1\n', b'Janusz\n', b'Kowalski\n', b'2002-02-21\n',
               b'3\n', b'2\n', b'1\n', b'2002-02-22\n', b'1\n',
               b'2\n', b'1\n', b'451 Stopni Fahrenheita\n', b'2\n', b'Michal\n', b'Staszewski\n', b'2002-02-23\n',
               b'3\n', b'1\n', b'451 Stopni Fahrenheita\n', b'2005-02-23\n', b'2\n',
-              b'2\n', b'2\n', b'1\n', b'3\n', b'\n', b'\n',  # Testcase where czytacz (Imie, Nazwisko) data is incorrect
+              b'2\n', b'2\n', b'1\n', b'3\n', b'\n', b'\n',  # Przypadek testowy, w którym dane czytacza (Imie, Nazwisko) są niepoprawne
               b'2\n', b'2\n', b'1\n', b'4\n', b'Paulina\n', b'Borsuk\n', b'2010-04-01\n']:
-        TEST_INPUT_STRINGS += i
+        LANCUCH_TESTOWYCH_DANYCH_WEJSCIOWYCH += i
     process = subprocess.Popen(['python3', 'main.py', 'test'],
                                stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     try:
-        # Provide the user input programmatically using the communicate() method
-        output, error = process.communicate(
-            input=TEST_INPUT_STRINGS)
-        print(output.decode('utf-8'))
+        wyjscie, blad = process.communicate(
+            input=LANCUCH_TESTOWYCH_DANYCH_WEJSCIOWYCH)
+        print(wyjscie.decode('utf-8'))
     except Exception as e:
-        print(f'Error: {e}')
+        print(f'Błąd: {e}')
 
 
 def test_data_folder():
-    data_folder = "data"
-    files = ["biblioteka.csv", "czytacze.csv", "historia.csv"]
+    katalog_danych = "data"
+    pliki = ["biblioteka.csv", "czytacze.csv", "historia.csv"]
 
-    for file in files:
-        assert os.path.isfile(os.path.join(data_folder, file))
+    for plik in pliki:
+        assert os.path.isfile(os.path.join(katalog_danych, plik))
 
 
 def test_biblioteka_csv():
     with open('data/biblioteka.csv', 'r') as f:
-        content = f.read().strip()
-    expected_content = """ID,Tytul,Autor,Rok wydania,Status
+        kontent = f.read().strip()
+    oczekiwany_kontent = """ID,Tytul,Autor,Rok wydania,Status
 1,451 Stopni Fahrenheita,Ray Bradbury,1953-01-01,Nie w bibliotece
 2,Zmierzch,Stephenie Meyer,2005-01-01,W bibliotece"""
-    assert content == expected_content, f"Expected '{expected_content}', but got '{content}'"
+    assert kontent == oczekiwany_kontent, f"Expected '{oczekiwany_kontent}', but got '{kontent}'"
 
 
 def test_historia_csv():
     with open('data/historia.csv', 'r') as f:
-        content = f.read().strip()
-    expected_content = """ID,Numer czytacza,Czy udana,Data wypozczenia,Data oddania
+        kontent = f.read().strip()
+    oczekiwany_kontent = """ID,Numer czytacza,Czy udana,Data wypozczenia,Data oddania
 0,1,False,2002-02-21,2002-02-22
 0,2,False,2002-02-23,2005-02-23
 0,3,False,,0
 0,4,True,2010-04-01,0"""
-    assert content == expected_content, f"Expected '{expected_content}', but got '{content}'"
+    assert kontent == oczekiwany_kontent, f"Expected '{oczekiwany_kontent}', but got '{kontent}'"
 
 
 def test_czytacze_csv():
     with open('data/czytacze.csv', 'r') as f:
-        content = f.read().strip()
-    expected_content = """Numer czytacza,Imie,Nazwisko,llosc ksiazek
+        kontent = f.read().strip()
+    oczekiwany_kontent = """Numer czytacza,Imie,Nazwisko,llosc ksiazek
 1,Janusz,Kowalski,0
 2,Michal,Staszewski,0
 3,Jadwiga,Mroczek,0
 4,Paulina,Borsuk,1"""
-    assert content == expected_content, f"Expected '{expected_content}', but got '{content}'"
+    assert kontent == oczekiwany_kontent, f"Expected '{oczekiwany_kontent}', but got '{kontent}'"

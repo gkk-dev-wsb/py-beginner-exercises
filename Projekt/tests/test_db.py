@@ -1,9 +1,8 @@
 import os
 import sys
 
-# Add the parent directory to the sys.path list
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.insert(0, parent_dir)
+katalog_nadrzedny = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, katalog_nadrzedny)
 
 
 import utils.db as db # pylint: disable=import-error
@@ -12,40 +11,42 @@ import utils.constants as c # pylint: disable=import-error
 
 def test_inicjujDane():
     if os.path.exists(c.FOLDER_DANYCH):
-        for file_name in os.listdir(c.FOLDER_DANYCH):
-            os.remove(os.path.join(c.FOLDER_DANYCH, file_name))
+        for nazwa_pliku in os.listdir(c.FOLDER_DANYCH):
+            os.remove(os.path.join(c.FOLDER_DANYCH, nazwa_pliku))
         os.rmdir(c.FOLDER_DANYCH)
     db.inicjujDane()
     assert os.path.exists(c.FOLDER_DANYCH)
-    for file_name in ['historia.csv', 'biblioteka.csv', 'czytacze.csv']:
-        file_path = os.path.join(c.FOLDER_DANYCH, file_name)
-        assert os.path.exists(file_path)
-    expected_headers = [
+    for nazwa_pliku in ['historia.csv', 'biblioteka.csv', 'czytacze.csv']:
+        sciezka_pliku = os.path.join(c.FOLDER_DANYCH, nazwa_pliku)
+        assert os.path.exists(sciezka_pliku)
+    oczekiwane_naglowki = [
         ["ID", 'Numer czytacza', "Czy udana", "Data wypozczenia", "Data oddania"],
         ["ID", "Tytul", "Autor", "Rok wydania", "Status"],
         ["Numer czytacza", "Imie", "Nazwisko", "llosc ksiazek"]
     ]
-    for file_name, expected_header in zip(['historia.csv', 'biblioteka.csv', 'czytacze.csv'], expected_headers):
-        header, _ = db.odczytaj_dane_bez_naglowka(file_name)
-        assert header == expected_header
+    for nazwa_pliku, oczekiwany_naglowek in zip(['historia.csv', 'biblioteka.csv', 'czytacze.csv'], oczekiwane_naglowki):
+        naglowek, _ = db.odczytaj_dane_bez_naglowka(nazwa_pliku)
+        assert naglowek == oczekiwany_naglowek
 
 
 def test_zapiszDoPliku(tmp_path):
-    # Create a temporary file for testing
-    file_path = os.path.join(tmp_path, "test_file.csv")
+    """
+        - Przetestuj zapisanie jednego wiersza do pliku
+        - Przetestuj zapisywanie wielu wierszy do pliku
+        - Utwórz plik tymczasowy do testowania
+    """
+    
+    sciezka_pliku = os.path.join(tmp_path, "test_file.csv")
+    dane = ["ID", "Name", "Age"]
+    db.zapiszDoPliku(sciezka_pliku, dane)
+    with open(sciezka_pliku, 'r') as f:
+        kontent = f.read()
+    assert kontent == "ID,Name,Age\n"
 
-    # Test writing one row to the file
-    data = ["ID", "Name", "Age"]
-    db.zapiszDoPliku(file_path, data)
-    with open(file_path, 'r') as f:
-        contents = f.read()
-    assert contents == "ID,Name,Age\n"
-
-    # Test writing multiple rows to the file
-    data2 = ["1", "John", "25"]
-    data3 = ["2", "Jane", "30"]
-    db.zapiszDoPliku(file_path, data2)
-    db.zapiszDoPliku(file_path, data3)
-    with open(file_path, 'r') as f:
-        contents = f.readlines()
-    assert contents == ["ID,Name,Age\n", "1,John,25\n", "2,Jane,30\n"]
+    dane2 = ["1", "John", "25"]
+    dane3 = ["2", "Jane", "30"]
+    db.zapiszDoPliku(sciezka_pliku, dane2)
+    db.zapiszDoPliku(sciezka_pliku, dane3)
+    with open(sciezka_pliku, 'r') as f:
+        kontent = f.readlines()
+    assert kontent == ["ID,Name,Age\n", "1,John,25\n", "2,Jane,30\n"]

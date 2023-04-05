@@ -8,9 +8,11 @@ def odczytaj_dane_bez_naglowka(nazwaPliku: str) -> tuple:
     """
     Czyta podany plik CSV i zwraca krotkę zawierającą nagłówek i wiersze.
     
-    :param fileName: str, nazwa pliku do odczytu
+    Args:
+    fileName: str, nazwa pliku do odczytu
     
-    :return: tuple, zawierająca nagłówek i wiersze
+    Returns:
+    tuple, zawierająca nagłówek i wiersze
     """
     with open(os.path.join(c.FOLDER_DANYCH, nazwaPliku), 'r', newline='') as csvfile:
         czytacz = csv.reader(csvfile)
@@ -22,11 +24,13 @@ def zapisz_dane_bez_naglowka(nazwaPliku: str, naglowek: list, wiersze: list[list
     """
     Zapisuje podane wiersze do określonego pliku CSV z podanym nagłówkiem.
 
-    :param nazwaPliku: str, nazwa pliku do zapisania
-    :param naglowek: list, nagłówek do zapisania do pliku
-    :param wiersze: list[list], wiersze do zapisania do pliku
+    Args:
+    nazwaPliku: str, nazwa pliku do zapisania
+    naglowek: list, nagłówek do zapisania do pliku
+    wiersze: list[list], wiersze do zapisania do pliku
     
-    :return: None
+    Returns:
+    None
     """
     with open(os.path.join(c.FOLDER_DANYCH, nazwaPliku), 'w', newline='') as csvfile:
         pisaz = csv.writer(csvfile)
@@ -36,9 +40,11 @@ def zapisz_dane_bez_naglowka(nazwaPliku: str, naglowek: list, wiersze: list[list
 
 def inicjujDane() -> None:
     """
-    Inicjalizuje dane poprzez utworzenie wymaganych plików CSV z ich odpowiednimi nagłówkami.
+    Inicjalizuje dane poprzez utworzenie wymaganych plików CSV z ich
+    odpowiednimi nagłówkami.
 
-    :return: None
+    Returns:
+    None
     """
     kolumnyPlikow = {
         "historia": ["ID", 'Numer czytacza',
@@ -59,9 +65,13 @@ def inicjujDane() -> None:
 def zapiszDoPliku(sciezka: Path, dane: list) -> None:
     """
     Zapisuje podane dane do określonego pliku.
-    :param sciezka: str, ścieżka pliku, do którego mają zostać zapisane dane
-    :param dane: list, dane do zapisania do pliku
-    :return: None
+    
+    Args:
+    sciezka: str, ścieżka pliku, do którego mają zostać zapisane dane
+    dane: list, dane do zapisania do pliku
+    
+    Returns:
+    None
     """
     with open(sciezka, 'a') as f:
         pisaz = csv.writer(f)
@@ -73,10 +83,12 @@ def aktualizuj_czytaczy(numerCzytacza: int, iloscksiazek: int) -> None:
     Aktualizuje wartość pola 'ilość książek' dla podanego 'numerCzytacza' w
     pliku CSV.
     
-    :param numerCzytacza: int, numer czytelnika do zaktualizowania
-    :param iloscksiazek: int, nowa wartość pola 'ilość książek'
+    Args:
+    numerCzytacza: int, numer czytelnika do zaktualizowania
+    iloscksiazek: int, nowa wartość pola 'ilość książek'
     
-    :return: None
+    Returns:
+    None
     """
     naglowek, wiersze = odczytaj_dane_bez_naglowka('czytacze.csv')
     for wiersz in wiersze:
@@ -91,11 +103,13 @@ def aktualizuj_historie(id_ksiazki: int, data_oddania: int, czyUdana: bool) -> N
     Aktualizuje wartość pola 'Data oddania' dla danej książki o identyfikatorze
     'id_ksiazki' w pliku CSV.
     
-    :param id_ksiazki: int, identyfikator książki
-    :param data_oddania: int, nowa wartość pola 'Data oddania'
-    :param czyUdana: bool, flaga informująca o powodzeniu operacji
+    Args:
+    id_ksiazki: int, identyfikator książki
+    data_oddania: int, nowa wartość pola 'Data oddania'
+    czyUdana: bool, flaga informująca o powodzeniu operacji
     
-    :return: None
+    Returns:
+    None
     """
     naglowek, wiersze = odczytaj_dane_bez_naglowka('historia.csv')
     for wiersz in wiersze:
@@ -109,7 +123,7 @@ def aktualizuj_biblioteke(id: int, status: str) -> None:
     """
     Aktualizuje pole 'Status' książki o podanym 'id' w pliku 'biblioteka.csv'.
 
-    Parameters:
+    Args:
     id (int): ID książki do zaktualizowania (indeksowane od 0).
     status (str): Nowy status książki.
 

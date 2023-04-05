@@ -1,7 +1,7 @@
 import os
 import csv
-from obj.dataObjects import Ksiazka
-from obj.dataObjects import Czytacz, Ksiazka
+from obj.objektyDanych import Ksiazka
+from obj.objektyDanych import Czytacz, Ksiazka
 import utils.utils as u
 import utils.constants as c
 import utils.db as db
@@ -29,7 +29,14 @@ class Biblioteka:
     def iloscCzytaczy(self):
         return len(self.czytacze)
     
-    def ladujBiblioteke(self):
+    def ladujBiblioteke(self) -> None:
+        """
+        Metoda wczytuje dane z plików CSV i dodaje je do biblioteki.
+        Wczytywane pliki to biblioteka.csv, czytacze.csv i historia.csv.
+
+        Returns:
+        None
+        """
         if os.path.join(c.FOLDER_DANYCH, f"biblioteka.csv"):
             with open(os.path.join(c.FOLDER_DANYCH, f"biblioteka.csv"), newline='') as csvfile:
                 reader = csv.reader(csvfile)
@@ -50,6 +57,23 @@ class Biblioteka:
                     self.operacje.append(row)
 
     def dodajKsiazke(self, tytul=None, autor=None, rokWydania=None, status=None) -> None:
+        """
+        Funkcja dodajKsiazke dodaje nową książkę do listy książek biblioteki.
+        Jeśli brakuje informacji o tytule, autorze lub roku wydania, funkcja
+        prosi użytkownika o wprowadzenie odpowiedniej informacji. Funkcja
+        waliduje również rok wydania, sprawdzając, czy ma poprawny format.
+        Po dodaniu książki do listy, funkcja również loguje informacje o dodanej
+        książce do pliku biblioteki.
+
+        Args:
+        tytul: str (opcjonalny) - tytuł książki
+        autor: str (opcjonalny) - autor książki
+        rokWydania: str (opcjonalny) - rok wydania książki w formacie "YYYY"
+        status: str (opcjonalny) - status książki
+        
+        Returns:
+        None
+        """
         try:
             readInput = False
             if (not tytul):
@@ -76,6 +100,16 @@ class Biblioteka:
             print("Nie udało się dodać książki...")
 
     def dodajCzytacza(self, imie=None, nazwisko=None) -> None:
+        """
+        Args:
+        imie (str, optional): Imię czytacza. Jeśli nie podano, zostanie zapytane
+        o nie użytkownika.
+        nazwisko (str, optional): Nazwisko czytacza. Jeśli nie podano, zostanie
+        zapytane o nie użytkownika.
+
+        Returns:
+        None
+        """
         try:
             readinput = False
             if (not imie):
@@ -92,9 +126,17 @@ class Biblioteka:
         except:
             print("Nie udało się dodać czytacza...")
 
-    def wypozyczKsiazke(self):
+    def wypozyczKsiazke(self) -> None:
+        """
+        Metoda służąca do wypożyczania książki przez czytelnika. Wypożycza
+        książkę, którą znajduje po tytule lub indeksie i aktualizuje dane w
+        bazie danych.
+
+        Returns:
+        None
+        """
         try:
-            ksiazka = self.find_book_by_title_or_index()
+            ksiazka = self.znajdz_ksiazke_wedlug_tytulu_lub_indeksu()
             ksiazka.status = "Nie w bibliotece"
             indeksCzytacza = int(u.czyscWejscie(
                 input("numer czytacza: "), trybTestowania=self.TEST_MODE))
@@ -128,11 +170,18 @@ class Biblioteka:
                         self.operacje[-1])
             print("Nie udało się wypożyczyć książki...", e)
 
-    def oddajKsiazke(self):
+    def oddajKsiazke(self) -> None:
+        """
+        Umożliwia użytkownikowi zwrot książki do biblioteki, aktualizuje status
+        książki, historię czytelnika i plik biblioteczny.
+
+        Returns:
+        None
+        """
         czyUdana = False
         his = ["", "", czyUdana]
         try:
-            ksiazka = self.find_book_by_title_or_index()
+            ksiazka = self.znajdz_ksiazke_wedlug_tytulu_lub_indeksu()
             his[0] = ksiazka.indeksKsiazki
             dataOddania = u.waliduj_date_z_wejscia(
                 u.czyscWejscie(input("Podaj datę oddania (w formacie yyyy-mm-dd): "), trybTestowania=self.TEST_MODE))
@@ -163,29 +212,55 @@ class Biblioteka:
         finally:
             db.aktualizuj_historie(his[0], his[1], his[2])
 
-    def podejrzyjHistorieKsiazki(self):
+    def podejrzyjHistorieKsiazki(self) -> None:
+        """
+        Wyświetla historię wypożyczeń książki.
+        
+        Returns:
+        None
+        """
         try:
-            ksiazka = self.find_book_by_title_or_index()
+            ksiazka = self.znajdz_ksiazke_wedlug_tytulu_lub_indeksu()
             print(
                 f"Ksiązka: {ksiazka.tytul} {ksiazka.autor} {ksiazka.rokWydania}")
             print(f"Status: {ksiazka.status}")
             print("Historia:")
-            ct = 1
+            licznik = 1
             for op in self.operacje:
                 if (str(op[0]) == str(ksiazka.indeksKsiazki)):
-                    ct += 1
+                    licznik += 1
                     print(
-                        f"{ct}. Wyporzyczył: {op[1]} Udanie: { 'Tak' if op[2] else 'Nie'} Porzyczono: {op[3]} Oddano: {op[4]}")
+                        f"{licznik}. Wyporzyczył: {op[1]} Udanie: { 'Tak' if op[2] else 'Nie'} Porzyczono: {op[3]} Oddano: {op[4]}")
         except:
             print("Nie udało się znaleźć książki...")
 
     def znajdzCzytacza(self, indeks) -> Czytacz:
+        """
+        Funkcja znajduje obiekt klasy `Czytacz` o podanym indeksie i zwraca go.
+        Jeśli nie ma takiego czytacza w liście `czytacze`, funkcja rzuca błąd
+        ValueError.
+
+        Args:
+        indeks (int): Indeks czytacza.
+
+        Returns:
+        Czytacz: Obiekt klasy `Czytacz` o podanym indeksie.
+        """
         for cz in self.czytacze:
             if (cz.indeksCzytacza == (indeks-1)):
                 return cz
         raise ValueError("Wybrano nie istniejącą opcję w menu")
 
-    def find_book_by_title_or_index(self) -> Ksiazka:
+    def znajdz_ksiazke_wedlug_tytulu_lub_indeksu(self) -> Ksiazka:
+        """
+        Funkcja zwraca obiekt klasy Ksiazka wyszukany w bibliotece na podstawie
+        tytułu lub indeksu. Użytkownik wybiera sposób wyszukania, a funkcja
+        zwraca obiekt klasy Ksiazka o podanym tytule lub indeksie. Może rzucać
+        wyjątek ValueError w przypadku błędnych danych wejściowych.
+        
+        Returns:
+        Obiekt klasy Ksiazka.
+        """
         if self.iloscKsiazek < 1:
             raise ValueError("Nie ma książek w bibliotece")
 
