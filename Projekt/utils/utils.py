@@ -30,11 +30,7 @@ def validate_date_input(date_string, date_format='%Y-%m-%d'):
     :param date_format: str, format in which function reads date
     :return: datetime.date object if input is valid, None otherwise
     """
-    try:
-        date_obj = datetime.strptime(date_string, date_format).date()
-        return date_obj
-    except ValueError:
-        return None
+    return datetime.strptime(date_string, date_format).date()
 
 
 def cleanInput(input_str, testMode=False):
