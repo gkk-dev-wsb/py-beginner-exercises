@@ -6,11 +6,14 @@ import utils.utils as u
 
 TEST_MODE = False
 
-if __name__ == "__main__":
+def sprawdzCzyTrybTestowy():
     if len(sys.argv) > 1:
         if sys.argv[1] == 'test':
             TEST_MODE = True
             print("Uruchomiono w trybie testowym...")
+
+if __name__ == "__main__":
+    sprawdzCzyTrybTestowy()
     db.inicjujDane()
     biblioteka = Biblioteka(TEST_MODE)
     biblioteka.ladujBiblioteke()

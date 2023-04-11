@@ -28,7 +28,6 @@ def waliduj_date_z_wejscia(lancuch_daty, format_daty='%Y-%m-%d'):
     """
     return datetime.strptime(lancuch_daty, format_daty).date()
 
-
 def czyscWejscie(wejscie:str, trybTestowania=False):
     """
     Funkcja czyszczenia łańcucha znaków przez zastępowanie polskich znaków ich
