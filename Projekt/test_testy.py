@@ -1,6 +1,5 @@
 import os
 import sys
-from datetime import date
 import pytest
 import shutil
 import subprocess
