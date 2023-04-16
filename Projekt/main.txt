@@ -64,7 +64,7 @@ def odczytaj_dane_bez_naglowka(nazwaPliku: str) -> tuple:
     Returns:
     tuple, zawierająca nagłówek i wiersze
     """
-    with open(os.path.join(FOLDER_DANYCH, nazwaPliku), 'r', newline='') as csvfile:
+    with open(os.path.join(FOLDER_DANYCH, nazwaPliku), 'r') as csvfile:
         czytacz = csv.reader(csvfile)
         naglowek = next(czytacz)
         return naglowek, list(czytacz)
@@ -82,7 +82,7 @@ def zapisz_dane_bez_naglowka(nazwaPliku: str, naglowek: list, wiersze: list[list
     Returns:
     None
     """
-    with open(os.path.join(FOLDER_DANYCH, nazwaPliku), 'w', newline='') as csvfile:
+    with open(os.path.join(FOLDER_DANYCH, nazwaPliku), 'w') as csvfile:
         pisaz = csv.writer(csvfile)
         wiersze.insert(0, naglowek)
         pisaz.writerows(wiersze)
@@ -142,6 +142,8 @@ def aktualizuj_czytaczy(numerCzytacza: int, iloscksiazek: int) -> None:
     """
     naglowek, wiersze = odczytaj_dane_bez_naglowka('czytacze.csv')
     for wiersz in wiersze:
+        if not wiersz:
+            continue
         if int(wiersz[0]) == numerCzytacza:
             wiersz[3] = str(iloscksiazek)
             break
@@ -163,6 +165,8 @@ def aktualizuj_historie(id_ksiazki: int, data_oddania: int, czyUdana: bool) -> N
     """
     naglowek, wiersze = odczytaj_dane_bez_naglowka('historia.csv')
     for wiersz in wiersze:
+        if not wiersz:
+            continue
         if wiersz[0] == str(id_ksiazki) and str(wiersz[4]) == '0':
             wiersz[4] = str(data_oddania)
             wiersz[2] = str(czyUdana)
@@ -182,6 +186,8 @@ def aktualizuj_biblioteke(id: int, status: str) -> None:
     """
     naglowek, wiersze = odczytaj_dane_bez_naglowka('biblioteka.csv')
     for wiersz in wiersze:
+        if not wiersz:
+            continue
         if int(wiersz[0]) == id+1:
             wiersz[4] = str(status)
             break
@@ -244,9 +250,6 @@ def sprawdzCzyTrybTestowy():
             TEST_MODE = True
             print("Uruchomiono w trybie testowym...")
 
-import csv
-import os
-
 class Biblioteka:
     def __init__(self, TEST_MODE) -> None:
         self.ksiazki: list[Ksiazka] = []
@@ -278,25 +281,31 @@ class Biblioteka:
         None
         """
         if os.path.join(FOLDER_DANYCH, f"biblioteka.csv"):
-            with open(os.path.join(FOLDER_DANYCH, f"biblioteka.csv"), newline='') as csvfile:
+            with open(os.path.join(FOLDER_DANYCH, f"biblioteka.csv")) as csvfile:
                 reader = csv.reader(csvfile)
                 next(reader)
                 for row in reader:
+                    if not row:
+                        continue
                     self.dodajKsiazke(row[1], row[2], row[3], row[4])
         if os.path.join(FOLDER_DANYCH, f"czytacze.csv"):
-            with open(os.path.join(FOLDER_DANYCH, f"czytacze.csv"), newline='') as csvfile:
+            with open(os.path.join(FOLDER_DANYCH, f"czytacze.csv")) as csvfile:
                 reader = csv.reader(csvfile)
                 next(reader)
                 for row in reader:
+                    if not row:
+                        continue
                     self.dodajCzytacza(row[1], row[2])
         if os.path.join(FOLDER_DANYCH, f"historia.csv"):
-            with open(os.path.join(FOLDER_DANYCH, f"historia.csv"), newline='') as csvfile:
+            with open(os.path.join(FOLDER_DANYCH, f"historia.csv")) as csvfile:
                 reader = csv.reader(csvfile)
                 next(reader)
                 for row in reader:
+                    if not row:
+                        continue
                     self.operacje.append(row)
 
-    def dodajKsiazke(self, tytul=None, autor=None, rokWydania=None, status=None) -> None:
+    def dodajKsiazke(self, tytul=None, autor=None, rokWydania=None, status="W bibliotece") -> None:
         """
         Funkcja dodajKsiazke dodaje nową książkę do listy książek biblioteki.
         Jeśli brakuje informacji o tytule, autorze lub roku wydania, funkcja
@@ -528,9 +537,11 @@ class Biblioteka:
 
 if __name__ == "__main__":
     sprawdzCzyTrybTestowy()
-    inicjujDane()
     biblioteka = Biblioteka(TEST_MODE)
-    biblioteka.ladujBiblioteke()
+    if os.path.exists(os.path.join(FOLDER_DANYCH)):
+        biblioteka.ladujBiblioteke()
+    else:
+        inicjujDane()
     while True:
         menuWybor = czyscWejscie(input(ASCII_MENU), trybTestowania=TEST_MODE)
         if (menuWybor == '1'):
